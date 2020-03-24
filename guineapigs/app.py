@@ -4,6 +4,11 @@ from flask import Flask, render_template, redirect, request
 from guineapigs.database import Database
 
 TITLE = os.environ["TITLE"]
+UNITS = [
+    "g",
+    "oz",
+    "pcs"
+]
 
 def init_flask():
     global app, database
@@ -17,7 +22,8 @@ def index():
     return render_template(
         "index.html",
         foods=database.get_foods(),
-        title=TITLE
+        title=TITLE,
+        units=UNITS
         )
 
 @app.route("/submit", methods=["POST"])
