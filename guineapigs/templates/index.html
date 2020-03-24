@@ -27,7 +27,7 @@
       <div class="list-group-item">
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">{{ food["name"] }}</h5>
-          <small>{{ food["time"].strftime("%H:%M") }}</small>
+          <small>{{ food["time"].strftime("%l:%M %p") }}</small>
         </div>
         <div class="d-flex w-100 justify-content-between">
           <p class="mb-1">{{ food["quantity"] }}{{ food["unit"] }}</p>
