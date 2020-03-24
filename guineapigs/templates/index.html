@@ -29,7 +29,13 @@
           <h5 class="mb-1">{{ food["name"] }}</h5>
           <small>{{ food["time"].strftime("%H:%M") }}</small>
         </div>
-        <p class="mb-1">{{ food["quantity"] }}{{ food["unit"] }}</p>
+        <div class="d-flex w-100 justify-content-between">
+          <p class="mb-1">{{ food["quantity"] }}{{ food["unit"] }}</p>
+          <form action="/delete" method="post">
+            <input type="hidden" name="id" value="{{ food["_id"] }}">
+            <button type="submit" class="btn btn-danger" type="button">&times;</button>
+          </form>
+        </div>
       </div>
       {% else %}
         <p class="text-center">

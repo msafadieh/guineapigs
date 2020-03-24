@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 class Database:
@@ -12,3 +13,6 @@ class Database:
 
     def get_foods(self, time):
         return self.foods.find({"time": {"$gt": time}})
+
+    def delete_food(self, _id):
+        self.foods.delete_one({"_id": ObjectId(_id)})

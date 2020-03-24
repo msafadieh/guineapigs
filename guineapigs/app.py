@@ -45,3 +45,9 @@ def vitaminc():
     }
     database.add_food(food)
     return redirect("/")
+
+@app.route("/delete", methods=["POST"])
+def delete():
+    _id = request.form["id"]
+    database.delete_food(_id)
+    return redirect("/")
