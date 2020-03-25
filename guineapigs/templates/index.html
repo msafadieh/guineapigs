@@ -9,10 +9,10 @@
   <body>
   <div class="container">
 		<nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">{{ title }}</a>
+      <a class="navbar-brand" href="/">{{ title }}</a>
       <div>
         <form class="form-inline" action="vitaminc">
-          <button type="submit" class="btn btn-warning mr-2">Vitamin C</button>
+          <button class="btn btn-secondary mr-2" type="submit">&plus; Vitamin C</button>
           <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; Add</button>
         </form>
       </div>
@@ -34,11 +34,15 @@
         </div>
       </div>
       {% else %}
-        <p class="text-center">
-          No food yet &gt;:(
-        </p>
+        <h4 class="text-center mb-4">
+          no food yet &gt;:(
+        </h4>
         <img src="/static/hangry.png" width="500px" class="mx-auto img-fluid" alt="Blurry image showing an Abyssian and American Guinea pig excited behind cage grids">
       {% endfor %}
+      <blockquote class="blockquote text-center mt-4">
+        <p class="mb-0">{{ quote[0] }}.</p>
+        <footer class="blockquote-footer"><cite>{{ quote[1] }}</cite></footer>
+      </blockquote>
     </div>
 
     <div class="modal fade" id="addFood" tabindex="-1" role="dialog">

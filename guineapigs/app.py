@@ -1,5 +1,6 @@
 from datetime import datetime
 import os
+import random
 from flask import Flask, render_template, redirect, request
 from guineapigs.database import Database
 
@@ -8,6 +9,11 @@ UNITS = [
     "g",
     "oz",
     "pcs"
+]
+
+QUOTES = [
+    ("a karot a day keps the squekz awey", "stella"),
+    ("best wey 4 food? snetch it and run before humen catches u", "luna")
 ]
 
 def init_flask():
@@ -23,7 +29,8 @@ def index():
         "index.html",
         foods=database.get_foods(),
         title=TITLE,
-        units=UNITS
+        units=UNITS,
+        quote=random.choice(QUOTES)
         )
 
 @app.route("/submit", methods=["POST"])
