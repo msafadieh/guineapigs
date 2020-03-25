@@ -7,17 +7,16 @@
     <title>{{ title }}</title>
   </head>
   <body>
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="/">{{ title }}</a>
+    <div>
+      <form class="form-inline" action="vitaminc">
+        <button class="btn btn-secondary mr-2" type="submit">&plus; Vitamin C</button>
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; Add</button>
+      </form>
+    </div>
+  </nav>
   <div class="container">
-		<nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="/">{{ title }}</a>
-      <div>
-        <form class="form-inline" action="vitaminc">
-          <button class="btn btn-secondary mr-2" type="submit">&plus; Vitamin C</button>
-          <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; Add</button>
-        </form>
-      </div>
-		</nav>
-  
     <div class="list-group list-group-flush mt-4">
       {% for food in foods %}
       <div class="list-group-item">
