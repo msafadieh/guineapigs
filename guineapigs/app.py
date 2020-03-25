@@ -36,7 +36,7 @@ def index():
 @app.route("/submit", methods=["POST"])
 def submit():
     database.add_food(request.form["name"],
-                      request.int(form["quantity"]),
+                      int(request.form["quantity"]),
                       request.form["unit"])
     return redirect("/")
 
