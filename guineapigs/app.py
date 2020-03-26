@@ -77,14 +77,13 @@ def remove_name():
 def submit():
     form = request.form
     if (name := form.get("name")) in FOOD_OPTIONS:
-        if (qnt := form.get("quantity", "")).replace(".", "", 1).isdecimal():
-            database.add_food(name, float(qnt), request.cookies["name"])
+        database.add_food(name, request.cookies["name"])
     return redirect("/")
 
 @app.route("/vitaminc")
 @check_cookie
 def vitaminc():
-    database.add_food("Vitamin C", 1.0, request.cookies["name"])
+    database.add_food("Vitamin C", request.cookies["name"])
     return redirect("/")
 
 @app.route("/delete", methods=["POST"])
