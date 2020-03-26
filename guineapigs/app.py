@@ -12,14 +12,16 @@ QUOTES = [
     ("best wey 4 food? snetch it and run before humen catches u", "luna")
 ]
 
-FOOD_OPTIONS = [
-    "Carrot",
-    "Kale",
-    "Lettuce",
-    "Pea flake",
-    "Spinach",
-    "Treats"
-]
+FOOD_OPTIONS = """banana 🍌
+carrot 🥕
+cucumber 🥒
+green pepper 🫑
+kale 🥬
+pea flake 🥣
+red leaf lettuce 🥬
+romaine Lettuce 🥬
+spinach 🥬
+treats 🍬""".split("\n")
 
 def init_flask():
     global app, database
@@ -83,7 +85,7 @@ def submit():
 @app.route("/vitaminc")
 @check_cookie
 def vitaminc():
-    database.add_food("Vitamin C", request.cookies["name"])
+    database.add_food("Vitamin C 🧡", request.cookies["name"])
     return redirect("/")
 
 @app.route("/delete", methods=["POST"])
