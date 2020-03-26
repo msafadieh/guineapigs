@@ -1,15 +1,11 @@
 from datetime import datetime
+from functools import wraps
 import os
 import random
-from flask import Flask, render_template, redirect, request
+from flask import Flask, make_response, render_template, redirect, request
 from guineapigs.database import Database
 
 TITLE = os.environ["TITLE"]
-UNITS = [
-    "g",
-    "oz",
-    "pcs"
-]
 
 QUOTES = [
     ("a karot a day keps the squekz awey", "stella"),
@@ -23,29 +19,64 @@ def init_flask():
 
 init_flask()
 
-@app.route("/")
-def index():
+def check_cookie(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        if request.cookies.get("name"):
+            return func(*args, **kwargs)
+        return redirect("/setname")
+    return wrapped
+
+def render(*args, **kwargs):
     return render_template(
-        "index.html",
-        foods=database.get_foods(),
+        *args,
         title=TITLE,
-        units=UNITS,
-        quote=random.choice(QUOTES)
-        )
+        quote=random.choice(QUOTES),
+        **kwargs
+    )
+
+@app.route("/")
+@check_cookie
+def index():
+    return render("index.html", foods=database.get_foods())
+
+@app.route("/setname", methods=["GET", "POST"])
+def set_name():
+    saved_name = request.cookies.get("name")
+
+    if saved_name:
+        return redirect("/")
+
+    if request.method == "POST" and (name := request.form.get("name")):
+        resp = make_response(redirect("/"))
+        resp.set_cookie("name", name)
+        return resp
+
+    return render("setname.html")
+
+@app.route("/removename")
+@check_cookie
+def remove_name():
+    resp = make_response(redirect("/setname"))
+    resp.set_cookie("name", "")
+    return resp
 
 @app.route("/submit", methods=["POST"])
+@check_cookie
 def submit():
     database.add_food(request.form["name"],
                       int(request.form["quantity"]),
-                      request.form["unit"])
+                      request.cookies["name"])
     return redirect("/")
 
 @app.route("/vitaminc")
+@check_cookie
 def vitaminc():
-    database.add_food("Vitamin C", 1, "pcs")
+    database.add_food("Vitamin C", 1, request.cookies["name"])
     return redirect("/")
 
 @app.route("/delete", methods=["POST"])
+@check_cookie
 def delete():
     database.delete_food(request.form["id"])
     return redirect("/")

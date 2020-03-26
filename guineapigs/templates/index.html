@@ -1,91 +1,67 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/static/bootstrap.min.css">
-    <title>{{ title }}</title>
-  </head>
-  <body>
-  <nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand" href="/">{{ title }}</a>
-    <div>
-      <form class="form-inline" action="vitaminc">
-        <button class="btn btn-secondary mr-2" type="submit">&plus; Vitamin C</button>
-        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; Add</button>
-      </form>
-    </div>
-  </nav>
-  <div class="container">
-    <div class="list-group list-group-flush mt-4">
+{% extends "base.html" %}
+{% block navbar %}
+<form class="form-inline" action="vitaminc">
+  <button class="btn btn-secondary mr-2" type="submit">&plus; Vitamin C</button>
+  <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; Add</button>
+</form>
+{% endblock %}
+{% block content %}
+    <p class="mt-2 text-right">
+      Hi, {{request.cookies["name"]}}! <a href="/removename">Not you?</a>
+    </p>
+    <div class="list-group list-group-flush">
       {% for food in foods %}
       <div class="list-group-item">
         <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ food["name"] }}</h5>
-          <small>{{ food["time"].strftime("%l:%M %p") }}</small>
+        <h5 class="mb-1">{{ food["name"] }}</h5>
+        <small>{{ food["time"].strftime("%l:%M %p") }} by {{ food.get("person", "Someone") }}</small>
         </div>
         <div class="d-flex w-100 justify-content-between">
-          <p class="mb-1">{{ food["quantity"] }}{{ food["unit"] }}</p>
-          <form action="/delete" method="post">
-            <input type="hidden" name="id" value="{{ food["_id"] }}">
-            <button type="submit" class="btn btn-danger">&times;</button>
-          </form>
+        <p class="mb-1">{{ food["quantity"] }}pcs</p>
+        <form action="/delete" method="post">
+          <input type="hidden" name="id" value="{{ food["_id"] }}">
+          <button type="submit" class="btn btn-danger">&times;</button>
+        </form>
         </div>
       </div>
       {% else %}
         <h4 class="text-center mb-4">
-          no food yet &gt;:(
+        no food yet &gt;:(
         </h4>
         <img src="/static/hangry.png" width="500px" class="mx-auto img-fluid" alt="Blurry image showing an Abyssian and American Guinea pig excited behind cage grids">
       {% endfor %}
-      <blockquote class="blockquote text-center mt-4">
-        <p class="mb-0">{{ quote[0] }}.</p>
-        <footer class="blockquote-footer"><cite>{{ quote[1] }}</cite></footer>
-      </blockquote>
     </div>
-
+{% endblock %}
+{% block footer %}
+{{ super() }}
     <div class="modal fade" id="addFood" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add food</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form action="/submit" method="post">
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="food">Food</label>
-                <input class="form-control" type="text" name="name" id="food" placeholder="e.g.: carrots, lettuce, kale, etc...">
-              </div>
-              <div class="form-row">
-                <div class="col">
-                  <label for="quantity">Quantity</label>
-                  <input class="form-control" min="0" type="number" name="quantity" id="quantity" placeholder="e.g.: 1 piece,  2g, 4oz, etc...">
-                </div>
-                <div class="col">
-                  <label for="unit">Unit</label>
-                  <select class="custom-select" id="unit" name="unit">
-                    {% for unit in units %}
-                    <option value="{{ unit }}">{{ unit }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>
+            <div class="modal-header">
+                <h5 class="modal-title">Add food</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-success">&plus; Add</button>
-              <button class="btn btn-danger" data-dismiss="modal">&times; Cancel</button>
-            </div>
-          </form>
+            <form action="/submit" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="food">Food</label>
+                        <input class="form-control" type="text" name="name" id="food" placeholder="e.g.: carrots, lettuce, kale, etc...">
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="quantity">Quantity</label>
+                            <input class="form-control" min="0" type="number" name="quantity" id="quantity" placeholder="e.g.: 1 piece,  2g, 4oz, etc...">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">&plus; Add</button>
+                    <button class="btn btn-danger" data-dismiss="modal">&times; Cancel</button>
+                </div>
+            </form>
         </div>
-      </div>
     </div>
-  </div>
-
-    <script src="/static/jquery-3.4.1.slim.min.js"></script>
-    <script src="/static/popper.min.js"></script>
-    <script src="/static/bootstrap.min.js"></script>
-  </body>
-</html>
+    </div>
+{% endblock %}

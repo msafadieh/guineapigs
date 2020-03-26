@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="mx-auto" style="max-width: 300px;" action="/setname" method="POST">
+	<label for="name">Please enter your name:</label>
+	<input class="form-control form-control-lg" id="name" name="name" type="text" placeholder="Name">
+	<button type="submit" class="btn btn-primary btn-lg btn-block mt-1">Save</button>
+</form>
+{% endblock %}

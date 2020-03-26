@@ -19,11 +19,11 @@ class Database:
             )
         )
 
-    def add_food(self, name, quantity, unit):
+    def add_food(self, name, quantity, person):
         food = {
             "name": name,
             "quantity": quantity,
-            "unit": unit,
+            "person": person,
             "time": datetime.utcnow()
         }
         self.foods.insert_one(food)
