@@ -12,6 +12,15 @@ QUOTES = [
     ("best wey 4 food? snetch it and run before humen catches u", "luna")
 ]
 
+FOOD_OPTIONS = [
+    "Carrot",
+    "Kale",
+    "Lettuce",
+    "Pea flake",
+    "Spinach",
+    "Treats"
+]
+
 def init_flask():
     global app, database
     app = Flask(__name__)
@@ -38,7 +47,9 @@ def render(*args, **kwargs):
 @app.route("/")
 @check_cookie
 def index():
-    return render("index.html", foods=database.get_foods())
+    return render("index.html",
+                  foods=database.get_foods(),
+                  food_options=FOOD_OPTIONS)
 
 @app.route("/setname", methods=["GET", "POST"])
 def set_name():

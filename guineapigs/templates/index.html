@@ -17,7 +17,7 @@
         <small>{{ food["time"].strftime("%l:%M %p") }} by {{ food.get("person", "Someone") }}</small>
         </div>
         <div class="d-flex w-100 justify-content-between">
-        <p class="mb-1">{{ food["quantity"] }}pcs</p>
+        <p class="mb-1">Qty: {{ food["quantity"] }}</p>
         <form action="/delete" method="post">
           <input type="hidden" name="id" value="{{ food["_id"] }}">
           <button type="submit" class="btn btn-danger">&times;</button>
@@ -47,13 +47,14 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="food">Food</label>
-                        <input class="form-control" type="text" name="name" id="food" placeholder="e.g.: carrots, lettuce, kale, etc...">
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <label for="quantity">Quantity</label>
-                            <input class="form-control" min="0" type="number" name="quantity" id="quantity" placeholder="e.g.: 1 piece,  2g, 4oz, etc...">
-                        </div>
+						<select class="custom-select" id="food" name="name">
+              <option></option>
+              {% for food in food_options %}
+							<option value="{{ food }}">{{ food }}</option>
+							{% endfor %}
+						</select>
+						<label for="quantity">Quantity (per guinea pig)</label>
+						<input class="form-control" min="0" type="number" name="quantity" id="quantity">
                     </div>
                 </div>
                 <div class="modal-footer">
