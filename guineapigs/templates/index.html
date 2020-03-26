@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block navbar %}
 <form class="form-inline" action="vitaminc">
-  <button class="btn btn-secondary mr-2" type="submit">&plus; Vitamin C</button>
-  <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; Add</button>
+  <button class="btn btn-secondary mr-2" type="submit">&plus; vitamin c</button>
+  <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; add</button>
 </form>
 {% endblock %}
 {% block content %}
@@ -11,17 +11,24 @@
     </p>
     <div class="list-group list-group-flush">
       {% for food in foods %}
-      <div class="list-group-item">
-        <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1 align-self-center">{{ food["name"] }}</h5>
-        <div class="d-flex">
-          <small class="align-self-center">{{ food["time"].strftime("%l:%M %p") }} by {{ food.get("person", "Someone") }}</small>
-          <form action="/delete" method="post">
-            <input type="hidden" name="id" value="{{ food["_id"] }}">
-            <button type="submit" style="font-size: 1.8rem;" class="btn p-0 ml-1 btn-lg btn-link text-danger">&times;</button>
-          </form>
-        </div>
+      <div class="list-group-item d-flex w-100 justify-content-between">
+        <div class="w-100">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 align-self-center">{{ food["name"] }}</h5>
+            <p class="small align-self-start mb-0">{{ food["time"].strftime("%l:%M %p") }} by {{ food.get("person", "Someone") }}</p>
+          </div>
+        {% if food.get("notes") %}
+        <p class="mb-0">
+          <em>
+          {{ food["notes"] }}
+          </em>
+        </p>
+        {% endif %}
       </div>
+      <form class="align-self-start" action="/delete" method="post">
+        <input type="hidden" name="id" value="{{ food["_id"] }}">
+        <button type="submit" style="font-size: 1.8rem;text-decoration: none;" class="btn p-0 ml-1 btn-lg btn-link text-danger">&times;</button>
+      </form>
     </div>
       {% else %}
         <h4 class="text-center mb-4">
@@ -30,6 +37,18 @@
         <img src="/static/hangry.png" width="500px" class="mx-auto img-fluid" alt="Blurry image showing an Abyssian and American Guinea pig excited behind cage grids">
       {% endfor %}
     </div>
+    <form class="text-center mt-3">
+      {% if not request.args.get("older") %}
+      <input type="hidden" name="older" value="1">
+      {% endif %}
+      <button type="submit" class="btn btn-primary">
+      {% if request.args.get("older") %}
+      today &rightarrow;
+      {% else %}
+      &leftarrow; last week
+      {% endif %}
+    </button>
+    </form>
 {% endblock %}
 {% block footer %}
 {{ super() }}
@@ -52,6 +71,10 @@
                       <option value="{{ food }}">{{ food }}</option>
                       {% endfor %}
                     </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea class="form-control" name="notes" id="notes"></textarea>
                   </div>
                 </div>
                 <div class="modal-footer">

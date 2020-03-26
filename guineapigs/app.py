@@ -15,7 +15,7 @@ QUOTES = [
 FOOD_OPTIONS = """banana 🍌
 carrot 🥕
 cucumber 🥒
-green pepper 🫑
+green pepper 🔔
 kale 🥬
 pea flake 🥣
 red leaf lettuce 🥬
@@ -49,8 +49,10 @@ def render(*args, **kwargs):
 @app.route("/")
 @check_cookie
 def index():
+    older = bool(request.args.get("older"))
+
     return render("index.html",
-                  foods=database.get_foods(),
+                  foods=database.get_foods(older),
                   food_options=FOOD_OPTIONS)
 
 @app.route("/setname", methods=["GET", "POST"])
@@ -79,13 +81,13 @@ def remove_name():
 def submit():
     form = request.form
     if (name := form.get("name")) in FOOD_OPTIONS:
-        database.add_food(name, request.cookies["name"])
+        database.add_food(name, form.get("notes", ""), request.cookies["name"])
     return redirect("/")
 
 @app.route("/vitaminc")
 @check_cookie
 def vitaminc():
-    database.add_food("Vitamin C 🧡", request.cookies["name"])
+    database.add_food("vitamin c 🧡", "", request.cookies["name"])
     return redirect("/")
 
 @app.route("/delete", methods=["POST"])

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from bson import CodecOptions
 from bson.objectid import ObjectId
@@ -19,20 +19,22 @@ class Database:
             )
         )
 
-    def add_food(self, name, person):
+    def add_food(self, name, notes, person):
         food = {
             "name": name,
             "person": person,
+            "notes": notes,
             "time": datetime.utcnow()
         }
         self.foods.insert_one(food)
 
-    def get_foods(self):
-        time = datetime.now(self.timezone).replace(hour=0,
-                                                   minute=0,
-                                                   second=0,
-                                                   microsecond=0)
-        return self.timezone_aware.find({"time": {"$gt": time}})
+    def get_foods(self, older):
+        day_begin = datetime.now(self.timezone).replace(hour=0,
+                                                        minute=0,
+                                                        second=0,
+                                                        microsecond=0)
+        filter_ = {"time": {"$gt": day_begin - timedelta(days=6) if older else day_begin}}
+        return self.timezone_aware.find(filter_).sort("time", -1)
 
     def delete_food(self, _id):
         self.foods.delete_one({"_id": ObjectId(_id)})
