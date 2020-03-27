@@ -4,6 +4,7 @@ import os
 import random
 from flask import Flask, make_response, render_template, redirect, request
 from guineapigs.database import Database
+from guineapigs.utils import split_dates, start_of_day_and_week
 
 TITLE = os.environ["TITLE"]
 
@@ -50,9 +51,19 @@ def render(*args, **kwargs):
 @check_cookie
 def index():
     older = bool(request.args.get("older"))
+    start_day, start_week = start_of_day_and_week(os.environ["TIMEZONE"])
+    
+    foods = database.get_foods(start_week if older else start_day)
+    foods = split_dates(foods)
+    
+    if foods:
+        date, entries = foods.popitem(last=False)
+        key = "today" if entries[0]["time"] >= start_day else date
+        foods[key] = entries
+        foods.move_to_end(key, last=False)
 
     return render("index.html",
-                  foods=database.get_foods(older),
+                  entries=foods,
                   food_options=FOOD_OPTIONS)
 
 @app.route("/setname", methods=["GET", "POST"])
@@ -87,7 +98,7 @@ def submit():
 @app.route("/vitaminc")
 @check_cookie
 def vitaminc():
-    database.add_food("vitamin c 🧡", "", request.cookies["name"])
+    database.add_food("vitamin c 🌻", "", request.cookies["name"])
     return redirect("/")
 
 @app.route("/delete", methods=["POST"])

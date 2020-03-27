@@ -9,9 +9,11 @@
     <p class="mt-2 text-right">
       Hi, {{request.cookies["name"]}}! <a href="/removename">Not you?</a>
     </p>
-    <div class="list-group list-group-flush">
-      {% for food in foods %}
-      <div class="list-group-item d-flex w-100 justify-content-between">
+	{% for day, foods in entries.items() %}
+	<h3 class="mt-2">{{ day }}</h3>
+    <div class="list-group list-group-flush">  
+	  {% for food in foods %}
+      <div class="list-group-item d-flex w-100 justify-content-between px-0">
         <div class="w-100">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1 align-self-center">{{ food["name"] }}</h5>
@@ -30,24 +32,24 @@
         <button type="submit" style="font-size: 1.8rem;text-decoration: none;" class="btn p-0 ml-1 btn-lg btn-link text-danger">&times;</button>
       </form>
     </div>
+	  {% endfor %}
+    </div>
       {% else %}
         <h4 class="text-center mb-4">
         no food yet &gt;:(
         </h4>
-        <img src="/static/hangry.png" width="500px" class="mx-auto img-fluid" alt="Blurry image showing an Abyssian and American Guinea pig excited behind cage grids">
-      {% endfor %}
-    </div>
+        <img src="/static/hangry.png" width="500px" class="mx-auto img-fluid d-block mx-auto" alt="Blurry image showing an Abyssian and American Guinea pig excited behind cage grids">
+     	{% endfor %}
     <form class="text-center mt-3">
       {% if not request.args.get("older") %}
       <input type="hidden" name="older" value="1">
-      {% endif %}
       <button type="submit" class="btn btn-primary">
-      {% if request.args.get("older") %}
-      today &rightarrow;
-      {% else %}
       &leftarrow; last week
+      {% else %}
+      <button type="submit" class="btn btn-secondary">
+      today &rightarrow;
       {% endif %}
-    </button>
+      </button>
     </form>
 {% endblock %}
 {% block footer %}

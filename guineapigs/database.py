@@ -28,12 +28,12 @@ class Database:
         }
         self.foods.insert_one(food)
 
-    def get_foods(self, older):
-        day_begin = datetime.now(self.timezone).replace(hour=0,
-                                                        minute=0,
-                                                        second=0,
-                                                        microsecond=0)
-        filter_ = {"time": {"$gt": day_begin - timedelta(days=6) if older else day_begin}}
+    def get_foods(self, gt=None):
+        filter_ = {}
+
+        if gt:
+            filter_["time"] = {"$gt": gt}
+
         return self.timezone_aware.find(filter_).sort("time", -1)
 
     def delete_food(self, _id):

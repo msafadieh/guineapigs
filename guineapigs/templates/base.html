@@ -5,12 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
 	<title>{{ title }}</title>
 	{% endblock %}
 	</head>
   <body>
   <nav class="navbar navbar-light bg-light">
-    <div class="container px-0">
+    <div class="container px-0 justify-content-center flex-column flex-sm-row justify-content-sm-between">
       <a class="navbar-brand" href="/">{{ title }}</a>
       {% block navbar %}{% endblock %}
     </div>
