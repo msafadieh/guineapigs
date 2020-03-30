@@ -22,6 +22,7 @@ pea flake 🥣
 red leaf lettuce 🥬
 romaine Lettuce 🥬
 spinach 🥬
+tomato 🍅
 treats 🍬""".split("\n")
 
 def init_flask():
