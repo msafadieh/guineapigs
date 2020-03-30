@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block navbar %}
 <form class="form-inline" action="vitaminc">
+  {% if request.args.get("older") %}
+  <input type="hidden" name="older" value="1">
+  {% endif %}
   <button class="btn btn-secondary mr-2" type="submit">&plus; vitamin c</button>
   <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addFood">&plus; add</button>
 </form>
@@ -29,7 +32,10 @@
     </div>
     <form class="align-self-start" action="/delete" method="post">
       <input type="hidden" name="id" value="{{ food["_id"] }}">
-      <button type="submit" style="font-size: 1.8rem;text-decoration: none;"
+	  {% if request.args.get("older") %}
+	  <input type="hidden" name="older" value="1">
+	  {% endif %}
+	  <button type="submit" style="font-size: 1.8rem;text-decoration: none;"
         class="btn p-0 ml-1 btn-lg btn-link text-danger">&times;</button>
     </form>
   </div>

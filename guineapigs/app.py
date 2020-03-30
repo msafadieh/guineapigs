@@ -100,10 +100,14 @@ def submit():
 @check_cookie
 def vitaminc():
     database.add_food("vitamin c 🌻", "", request.cookies["name"])
+    if request.args.get("older"):
+        return redirect("/?older=1")
     return redirect("/")
 
 @app.route("/delete", methods=["POST"])
 @check_cookie
 def delete():
     database.delete_food(request.form["id"])
+    if request.form.get("older"):
+        return redirect("/?older=1")
     return redirect("/")
