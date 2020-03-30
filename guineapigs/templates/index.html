@@ -20,7 +20,7 @@
     <div class="w-100">
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1 align-self-center">{{ food["name"] }}</h5>
-        <p class="small align-self-start mb-0">{{ food["time"].strftime("%l:%M %p") }} by {{ food.get("person", "Someone") }}</p>
+        <p class="small align-self-start text-right mb-0 ml-2">{{ food["time"].strftime("%l:%M %p") }} by {{ food.get("person", "Someone") }}</p>
       </div>
       {% if food.get("notes") %}
       <p class="mb-0">
