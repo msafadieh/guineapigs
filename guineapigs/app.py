@@ -20,6 +20,7 @@ cucumber 🥒
 green pepper 🔔
 kale 🥬
 mint 🌿
+new food 🎀
 pea flake 🥣
 red leaf lettuce 🥬
 romaine lettuce 🥬
