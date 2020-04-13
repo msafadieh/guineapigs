@@ -13,14 +13,16 @@ QUOTES = [
     ("best wey 4 food? snetch it and run before humen catches u", "luna")
 ]
 
-FOOD_OPTIONS = """banana 🍌
+FOOD_OPTIONS = """arugula 🌿
+banana 🍌
 carrot 🥕
 cucumber 🥒
 green pepper 🔔
 kale 🥬
+mint 🌿
 pea flake 🥣
 red leaf lettuce 🥬
-romaine Lettuce 🥬
+romaine lettuce 🥬
 spinach 🥬
 tomato 🍅
 treats 🍬""".split("\n")
@@ -76,7 +78,7 @@ def set_name():
 
     if request.method == "POST" and (name := request.form.get("name")):
         resp = make_response(redirect("/"))
-        resp.set_cookie("name", name)
+        resp.set_cookie("name", name, max_age=31536000)
         return resp
 
     return render("setname.html")
