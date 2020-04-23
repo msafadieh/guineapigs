@@ -66,7 +66,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add food</h5>
+        <h5 class="modal-title">add food</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -74,7 +74,7 @@
       <form action="/submit" method="post">
         <div class="modal-body">
           <div class="form-group">
-            <label for="food">Food</label>
+            <label for="food">food</label>
             <select class="custom-select" id="food" name="name">
               <option></option>
               {% for food in food_options %}
@@ -83,13 +83,13 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="notes">Notes</label>
+            <label for="notes">notes</label>
             <textarea class="form-control" name="notes" id="notes"></textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">&plus; Add</button>
-          <button class="btn btn-danger" data-dismiss="modal">&times; Cancel</button>
+          <button type="submit" class="btn btn-success">&plus; add</button>
+          <button class="btn btn-danger" data-dismiss="modal">&times; cancel</button>
         </div>
       </form>
     </div>
