@@ -15,7 +15,7 @@
   {% include "navbar.html" %}
   <div class="container">
     {% if current_user.is_authenticated %}
-    <h4 class="mt-2 text-right">
+    <h4 class="my-3 text-right">
       Hi, {{current_user.name}}! <a href="/logout">Not you?</a>
     </h4>
     {% endif %}

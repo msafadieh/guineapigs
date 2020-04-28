@@ -97,6 +97,7 @@ def add_food_entry(id=None):
     form.food_type_id.choices = [(ft.id, ft.label) for ft in FoodType.query.order_by(FoodType.label).all()]
     form.guinea_pig_ids.choices = [(gp.id, gp.name) for gp in GuineaPig.query.order_by(GuineaPig.name).all()]
 
+    entry = None
     if id:
         entry = FoodEntry.query.filter(FoodEntry.id==id).first()
 
@@ -126,6 +127,7 @@ def add_weight_entry(id=None):
     form = WeightEntryForm()
     form.guinea_pig_id.choices = [(gp.id, gp.name) for gp in GuineaPig.query.order_by(GuineaPig.name).all()]
     
+    entry = None
     if id:
         entry = WeightEntry.query.filter(WeightEntry.id==id).first()
 
@@ -150,6 +152,7 @@ def add_weight_entry(id=None):
 @login_required
 def add_guinea_pig(id=None):
     form = GuineaPigForm()
+    gp = None
     if id:
         gp = GuineaPig.query.filter(GuineaPig.id==id).first()
 
@@ -170,6 +173,7 @@ def add_guinea_pig(id=None):
 @login_required
 def add_food_type(id=None):
     form = FoodTypeForm()
+    ft = None
 
     if id:
         ft = FoodType.query.filter(FoodType.id==id).first()
