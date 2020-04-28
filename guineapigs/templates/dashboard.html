@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+{% if vitamin_c %}
+<div class="card text-white bg-success my-3">
+	<div class="card-header">Vitamin C</div>
+	<div class="card-body">
+		<h4 class="card-title">Vitamin C fulfilled</h4>
+		<p class="card-text">Given today @ {{ vitamin_c.utc_date.astimezone(config["TIMEZONE"]).strftime("%I:%M %p") }}</p>
+{% else %}
+<div class="card text-white bg-danger my-3">
+	<div class="card-header">Vitamin C</div>
+	<div class="card-body">
+		<h4 class="card-title">No Vitamin C today</h4>
+		<a href="/vitaminc" class="btn border-white text-white">&plus; add</a>
+{% endif %}
+	</div>
+</div>
+
+<div class="card text-white bg-info my-3">
+	<div class="card-header">Status</div>
+	{% for gp_name, weight in weights %}
+	<div class="card-body">
+		<h4 class="card-title">{{ gp_name }}</h4>
+		<p class="card-text"><span class="text-bold">Weight: </span>{% if weight > 0 %}{{ weight }}g{% else %}Unknown{% endif %}</p>
+	</div>
+	{% else %}
+	<div class="card-body">
+		<h4 class="Title">No guinea pigs registered</h4>
+	</div>
+	{% endfor %}
+</div>
+
+<div class="card bg-light my-3">
+	<div class="card-header">Food today</div>
+	{% for entry in food_entries %}
+	<div class="list-group-item d-flex w-100 justify-content-between px-0">
+    	<div class="w-100">
+      		<div class="d-flex w-100 justify-content-between">
+        		<h5 class="mb-1 align-self-center">{{ entry.food_type.label }}</h5>
+        		<p class="small align-self-start text-right mb-0 ml-2">{{ entry.utc_time.astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ entry.user.name }}</p>
+      		</div>
+      {% if entry.notes %}
+      <p class="mb-0">
+        <em>
+          {{ entry.notes }}
+        </em>
+      </p>
+      {% endif %}
+    </div>
+    <form class="align-self-start" action="/food_entry/delete" method="post">
+      <input type="hidden" name="id" value="{{ entry.id }}">
+	  <button type="submit" style="font-size: 1.8rem;text-decoration: none;"
+        class="btn p-0 ml-1 btn-lg btn-link text-danger">&times;</button>
+    </form>
+  </div>
+	{% endfor %}
+</div>
+{% endblock %}
