@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 44a4e2efb20b
+Revision ID: b0fdf277700e
 Revises: 
-Create Date: 2020-04-28 01:22:41.748086
+Create Date: 2020-04-28 02:22:44.617668
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '44a4e2efb20b'
+revision = 'b0fdf277700e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,7 +38,7 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_table('food_entry',
-    sa.Column('utc_date', sa.Date(), nullable=True),
+    sa.Column('utc_date', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('food_type_id', sa.Integer(), nullable=False),
     sa.Column('notes', sa.String(length=512), nullable=True),
@@ -48,14 +48,14 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('vitamin_c_entry',
-    sa.Column('utc_date', sa.Date(), nullable=True),
+    sa.Column('utc_date', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('weight_entry',
-    sa.Column('utc_date', sa.Date(), nullable=True),
+    sa.Column('utc_date', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('value', sa.Float(), nullable=False),
     sa.Column('guinea_pig_id', sa.Integer(), nullable=False),

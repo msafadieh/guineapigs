@@ -30,7 +30,7 @@ class FoodEntryForm(ModelForm):
     class Meta:
         model = FoodEntry
     food_type_id = SelectField("Food", coerce=int)
-    guinea_pig_ids = MultiCheckboxField("Guinea Pigs", coerce=int)
+    guinea_pig_ids = SelectMultipleField("Guinea Pigs", coerce=int)
 
 class WeightEntryForm(ModelForm):
     class Meta:

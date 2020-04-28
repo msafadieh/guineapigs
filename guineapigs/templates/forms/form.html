@@ -1,0 +1,22 @@
+{% from 'bootstrap/wtf.html' import form_field %}
+<div class="modal fade" id="{% block modal_id %}{% endblock %}" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+	  	<div class="modal-content">
+			<div class="modal-header">
+		  		<h5 class="modal-title">{% block modal_title %}{% endblock %}</h5>
+		  		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+		  		</button>
+			</div>
+			<form class="form" method="post" action="{% block target %}{% endblock %}">
+				<div class="modal-body">
+				{% block modal_body %}{% endblock %}
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success">&plus; save</button>
+					<button class="btn btn-danger" data-dismiss="modal">&times; cancel</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

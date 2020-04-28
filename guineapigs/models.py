@@ -1,6 +1,7 @@
 from sqlalchemy.ext.declarative import declared_attr
 from guineapigs.app import app, db
 from datetime import datetime
+import pytz
 
 __all__ = ('User', 'GuineaPig', 'FoodType', 'FoodEntry', 'VitaminCEntry', 'WeightEntry', )
 
@@ -45,7 +46,7 @@ class Entry:
     def user(cls):
         return db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    utc_date = db.Column(db.Date, default=datetime.utcnow)
+    utc_date = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now().astimezone(pytz.utc))
     @classmethod
     def get_entries_from_today(cls):
         timezone = app.config["TIMEZONE"]

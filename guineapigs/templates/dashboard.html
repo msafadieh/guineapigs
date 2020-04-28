@@ -2,10 +2,12 @@
 {% block content %}
 {% if vitamin_c %}
 <div class="card text-white bg-success my-3">
-	<div class="card-header">Vitamin C</div>
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h5>Vitamin C</h5>
+	</div>
 	<div class="card-body">
 		<h4 class="card-title">Vitamin C fulfilled</h4>
-		<p class="card-text">Given today @ {{ vitamin_c.utc_date.astimezone(config["TIMEZONE"]).strftime("%I:%M %p") }}</p>
+		<p class="card-text">Given today @ {{ vitamin_c[0].astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c[1] }}</p>
 {% else %}
 <div class="card text-white bg-danger my-3">
 	<div class="card-header">Vitamin C</div>
@@ -17,11 +19,14 @@
 </div>
 
 <div class="card text-white bg-info my-3">
-	<div class="card-header">Status</div>
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h5>Status</h5>
+		<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#add-weight-entry">&plus; add</button>
+	</div>
 	{% for gp_name, weight in weights %}
 	<div class="card-body">
 		<h4 class="card-title">{{ gp_name }}</h4>
-		<p class="card-text"><span class="text-bold">Weight: </span>{% if weight > 0 %}{{ weight }}g{% else %}Unknown{% endif %}</p>
+		<p class="card-text"><span class="text-bold">Weight: </span>{% if weight %}{{ weight }}g{% else %}Unknown{% endif %}</p>
 	</div>
 	{% else %}
 	<div class="card-body">
@@ -31,13 +36,17 @@
 </div>
 
 <div class="card bg-light my-3">
-	<div class="card-header">Food today</div>
-	{% for entry in food_entries %}
-	<div class="list-group-item d-flex w-100 justify-content-between px-0">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h5>Food entries</h5>
+		<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#add-food-entry">&plus; add</button>
+	</div>
+	<div class="list-group-flush card-body">
+	{% for label, entry, name in food_entries %}
+	<div class="list-group-item bg-light d-flex w-100 justify-content-between px-0">
     	<div class="w-100">
       		<div class="d-flex w-100 justify-content-between">
-        		<h5 class="mb-1 align-self-center">{{ entry.food_type.label }}</h5>
-        		<p class="small align-self-start text-right mb-0 ml-2">{{ entry.utc_time.astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ entry.user.name }}</p>
+        		<h5 class="mb-1 align-self-center">{{ label }}</h5>
+        		<p class="small align-self-start text-right mb-0 ml-2">{{ entry.utc_date.astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ name }}</p>
       		</div>
       {% if entry.notes %}
       <p class="mb-0">
@@ -53,6 +62,16 @@
         class="btn p-0 ml-1 btn-lg btn-link text-danger">&times;</button>
     </form>
   </div>
+	{% else %}
+	<h4 class="text-center">
+		no food yet &gt;:(
+	</h4>
 	{% endfor %}
+	</div>
 </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "forms/add_food_entry.html" %}
+{% include "forms/add_weight_entry.html" %}
 {% endblock %}
