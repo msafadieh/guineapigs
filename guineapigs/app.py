@@ -2,7 +2,6 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from flask_sqlalchemy import SQLAlchemy
 from guineapigs.config import Config
@@ -19,13 +18,6 @@ def init_flask():
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = "login"
-
-    nav = Nav()
-    nav.register_element('top', Navbar(
-        app.config['TITLE'],
-        View('dashboard', 'dashboard')
-    ))
-    nav.init_app(app)
 
     Bootstrap(app)
 
