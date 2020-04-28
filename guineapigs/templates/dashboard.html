@@ -22,13 +22,19 @@
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<h5>Status</h5>
 		<form class="modal-form" action="/weight_entry/add">
-			<button class="btn btn-primary modal-btn" type="button">&plus; add</button>
+			<button class="btn btn-primary modal-btn" type="button">&plus; log weight</button>
 		</form>
+	</div>
+	<div class="card-body">
+		<h4 class="card-title">Food statistics</h4>
+		{% for key, value in status.items() %}
+		<p class="card-text"><span class="font-weight-bold">{{ key }}: </span>{{ value }}</p>
+		{% endfor %}
 	</div>
 	{% for gp_name, weight in weights %}
 	<div class="card-body">
 		<h4 class="card-title">{{ gp_name }}</h4>
-		<p class="card-text"><span class="text-bold">Weight: </span>{% if weight %}{{ weight }}g{% else %}Unknown{% endif %}</p>
+		<p class="card-text"><span class="font-weight-bold">Weight: </span>{% if weight %}{{ weight }}g{% else %}Unknown{% endif %}</p>
 	</div>
 	{% else %}
 	<div class="card-body">
@@ -45,12 +51,12 @@
 		</form>
 	</div>
 	<div class="list-group-flush card-body">
-	{% for label, entry, name in food_entries %}
+	{% for entry in food_entries %}
 	<div class="list-group-item bg-light d-flex w-100 justify-content-between px-0">
     	<div class="w-100">
       		<div class="d-flex w-100 justify-content-between">
-        		<h5 class="mb-1 align-self-center">{{ label }}</h5>
-        		<p class="small align-self-start text-right mb-0 ml-2">{{ entry.utc_date.astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ name }}</p>
+        		<h5 class="mb-1 align-self-center">{{ entry.food_type.label }}</h5>
+        		<p class="small align-self-start text-right mb-0 ml-2">{{ entry.utc_date.astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ entry.user.name }}</p>
       		</div>
       {% if entry.notes %}
       <p class="mb-0">

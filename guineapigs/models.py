@@ -29,21 +29,21 @@ class User(db.Model):
 class GuineaPig(db.Model):
     __tablename__ = 'guinea_pig'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True, nullable=False)
+    name = db.Column(db.String(64), nullable=False)
     food_entries = db.relationship("FoodEntry", secondary=food_entries)
     weight_entries = db.relationship("WeightEntry")
 
 class FoodType(db.Model):
     __tablename__ = 'food_type'
     id = db.Column(db.Integer, primary_key=True)
-    label = db.Column(db.String(64), unique=True, nullable=False) 
+    label = db.Column(db.String(64), nullable=False) 
     recommendations = db.Column(db.String(512))
     entries = db.relationship("FoodEntry")
 
 class Entry:
 
     @declared_attr
-    def user(cls):
+    def user_id(cls):
         return db.Column(db.Integer, db.ForeignKey('user.id'))
 
     utc_date = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now().astimezone(pytz.utc))
@@ -63,15 +63,19 @@ class FoodEntry(db.Model, Entry):
     __tablename__ = 'food_entry'
     id = db.Column(db.Integer, primary_key=True)
     food_type_id = db.Column(db.Integer, db.ForeignKey('food_type.id'), nullable=False)
+    food_type = db.relationship('FoodType')
     notes = db.Column(db.String(512))
     guinea_pigs = db.relationship("GuineaPig", secondary=food_entries)
+    user = db.relationship('User')
 
 class VitaminCEntry(db.Model, Entry):
     __tablename__ = 'vitamin_c_entry'
     id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship('User')
 
 class WeightEntry(db.Model, Entry):
     __tablename__ = 'weight_entry'
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Float, nullable=False)
     guinea_pig_id = db.Column(db.Integer, db.ForeignKey("guinea_pig.id"), nullable=False)
+    user = db.relationship('User')
