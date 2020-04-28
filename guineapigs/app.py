@@ -2,7 +2,6 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_nav.elements import Navbar, View
 from flask_sqlalchemy import SQLAlchemy
 from guineapigs.config import Config
 
