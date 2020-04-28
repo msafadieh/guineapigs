@@ -30,13 +30,25 @@
 	  {% block navbar %}{% endblock %}
   </nav>
   <div class="container">
+    {% if current_user.is_authenticated %}
+    <h4 class="mt-2 text-right">
+      Hi, {{current_user.name}}! <a href="/logout">Not you?</a>
+    </h4>
+    {% endif %}
     {% block content %}{% endblock %}
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+          <div id="modal-content" class="modal-content">
+        </div>
+      </div>
+    </div>
     {% block footer %}{% endblock %}
   </div>
 
-  <script src="/static/jquery-3.4.1.slim.min.js"></script>
+  <script src="/static/jquery-3.5.0.min.js"></script>
   <script src="/static/popper.min.js"></script>
   <script src="/static/bootstrap.min.js"></script>
+  <script src="/static/script.js"></script>
 </body>
 
 </html>

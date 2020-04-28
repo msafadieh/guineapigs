@@ -1,5 +1,5 @@
 from flask import jsonify, redirect, render_template, request
-from flask_login import current_user, login_required, login_user
+from flask_login import current_user, login_required, login_user, logout_user
 from guineapigs.app import app, db
 from guineapigs.forms import *
 from guineapigs.models import *
@@ -22,6 +22,11 @@ def login():
     print(form.errors.items())
     return render_template("login.html", login_form=form)
 
+@app.route("/logout")
+def logout_view():
+    logout_user()
+    return redirect("/")
+
 @app.route("/")
 @login_required
 def dashboard():
@@ -41,16 +46,7 @@ def dashboard():
                          .distinct(GuineaPig.name)
                          .order_by(GuineaPig.name, WeightEntry.utc_date.desc()))
 
-    add_food_entry = FoodEntryForm()
-    add_food_entry.food_type_id.choices = [(ft.id, ft.label) for ft in FoodType.query.order_by(FoodType.label).all()]
-    add_food_entry.guinea_pig_ids.choices = [(gp.id, gp.name) for gp in GuineaPig.query.order_by(GuineaPig.name).all()]
-
-    add_weight_entry = WeightEntryForm()
-    add_weight_entry.guinea_pig_id.choices = [(gp.id, gp.name) for gp in GuineaPig.query.order_by(GuineaPig.name).all()]
-
     return render_template("dashboard.html",
-            add_food_entry=add_food_entry,
-            add_weight_entry=add_weight_entry,
             food_entries=food_entries,
             weights=weights,
             vitamin_c=vitamin_c)
@@ -60,8 +56,6 @@ def dashboard():
 @login_required
 def settings():
     return render_template("settings.html",
-            add_food_type=FoodTypeForm(),
-            add_guinea_pig=GuineaPigForm(),
             food_types=FoodType.query.order_by("label").all(),
             guinea_pigs=GuineaPig.query.order_by(GuineaPig.name).all())
 
@@ -75,7 +69,7 @@ def vitaminc():
         db.session.commit()
     return redirect("/")
 
-@app.route("/food_entry/add", methods=["POST"])
+@app.route("/food_entry/add", methods=["GET", "POST"])
 @login_required
 def add_food_entry():
     form = FoodEntryForm()
@@ -91,10 +85,10 @@ def add_food_entry():
         db.session.commit()
         return jsonify(status='ok')
 
-    return render_template("forms/add_food_entry.html", add_food_entry_form=form)
+    return render_template("forms/add_food_entry.html", add_food_entry=form)
 
 
-@app.route("/weight_entry/add", methods=["POST"])
+@app.route("/weight_entry/add", methods=["GET", "POST"])
 @login_required
 def add_weight_entry():
     form = WeightEntryForm()
@@ -111,7 +105,7 @@ def add_weight_entry():
     return render_template("forms/add_weight_entry.html", add_weight_entry=form)
 
 
-@app.route("/guinea_pig/add", methods=["POST"])
+@app.route("/guinea_pig/add", methods=["GET", "POST"])
 @login_required
 def add_guinea_pig():
     form = GuineaPigForm()
@@ -123,9 +117,9 @@ def add_guinea_pig():
         db.session.commit()
         return jsonify(status='ok')
 
-    return render_template("forms/add_weight_entry.html", add_guinea_pig=form)
+    return render_template("forms/add_guinea_pig.html", add_guinea_pig=form)
 
-@app.route("/food_type/add", methods=["POST"])
+@app.route("/food_type/add", methods=["GET", "POST"])
 @login_required
 def add_food_type():
     form = FoodTypeForm()

@@ -3,7 +3,9 @@
 <div class="card text-white bg-info my-3">
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<h5>Guinea Pigs</h5>
-		<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#add-guinea-pig">&plus; add</button>
+		<form class="modal-form" action="/guinea_pig/add">
+			<button class="btn btn-primary modal-btn" type="button">&plus; add</button>
+		</form>
 	</div>
 	{% for gp in guinea_pigs %}
 	<div class="card-body">
@@ -18,8 +20,11 @@
 <div class="card text-white bg-secondary my-3">
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<h5>Food Types</h5>
-		<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#add-food-type">&plus; add</button>
-	</div>	{% for food_type in food_types %}
+		<form class="modal-form" action="/food_type/add">
+			<button class="btn btn-primary modal-btn" type="button">&plus; add</button>
+		</form>
+	</div>
+	{% for food_type in food_types %}
 	<div class="card-body">
 		<h4 class="card-title">{{ food_type.label }}</h4>
 		<p class="card-text"><b>Recommendations:</b> {{ food_type.recommendations }}</p>
@@ -30,8 +35,4 @@
 	</div>
 	{% endfor %}
 </div>
-{% endblock %}
-{% block footer %}
-{% include "forms/add_guinea_pig.html" %}
-{% include "forms/add_food_type.html" %}
 {% endblock %}

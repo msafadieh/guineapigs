@@ -29,14 +29,14 @@ class FoodTypeForm(ModelForm):
 class FoodEntryForm(ModelForm):
     class Meta:
         model = FoodEntry
-    food_type_id = SelectField("Food", coerce=int)
-    guinea_pig_ids = SelectMultipleField("Guinea Pigs", coerce=int)
+    food_type_id = SelectField("food", coerce=int)
+    guinea_pig_ids = SelectMultipleField("guinea pigs", coerce=int)
 
 class WeightEntryForm(ModelForm):
     class Meta:
         model = WeightEntry
-    guinea_pig_id = SelectField("Guinea Pigs", coerce=int)
+    guinea_pig_id = SelectField("guinea Pigs", coerce=int)
 
 class LoginForm(ModelForm):
-    name = StringField(label="First Name", validators=[DataRequired("Name can't be blank")])
+    name = StringField(label="first name", validators=[DataRequired("name can't be blank")])
 

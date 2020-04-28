@@ -1,8 +1,6 @@
 {% from 'bootstrap/wtf.html' import form_field %}
 {% extends "forms/form.html" %}
 {% block modal_title %}Add guinea pig{% endblock %}
-{% block modal_id %}add-guinea-pig{% endblock %}
-{% block target %}/guinea_pig/add{% endblock %}
 {% block modal_body %}
 	{{ add_guinea_pig.csrf_token }}
 	{{ form_field(add_guinea_pig.name) }}
