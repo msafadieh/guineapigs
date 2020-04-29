@@ -77,16 +77,16 @@ def dashboard():
     food_count = (
         db.session.query(FoodType.label, subq.c.count)
         .outerjoin(subq, subq.c.food_type_id == FoodType.id)
-        .filter(FoodType.in_statistics==True)
-        .filter(FoodType.is_hidden==False)
+        .filter(FoodType.in_statistics == True)
+        .filter(FoodType.is_hidden == False)
         .all()
     )
     food_latest = (
         db.session.query(FoodType.label, FoodEntry.utc_date)
         .join(FoodEntry)
         .distinct(FoodType.label)
-        .filter(FoodType.in_statistics==True)
-        .filter(FoodType.is_hidden==False)
+        .filter(FoodType.in_statistics == True)
+        .filter(FoodType.is_hidden == False)
         .order_by(FoodType.label, FoodEntry.utc_date.desc())
     )
     status = {}
@@ -158,7 +158,9 @@ def food_entry_form(id=None):
     form = FoodEntryForm()
     form.food_type_id.choices = [
         (food_entry.id, food_entry.label)
-        for food_entry in FoodType.query.order_by(FoodType.label).filter(FoodType.is_hidden==False).all()
+        for food_entry in FoodType.query.order_by(FoodType.label)
+        .filter(FoodType.is_hidden == False)
+        .all()
     ]
     form.guinea_pig_ids.choices = [
         (guinea_pig.id, guinea_pig.name)
@@ -279,6 +281,6 @@ def food_type_form(id=None):
         form.label.data = food_entry.label
         form.recommendations.data = food_entry.recommendations
         form.is_hidden.data = food_entry.is_hidden
-        form.in_statistics.data = food_entry.in_statistics 
+        form.in_statistics.data = food_entry.in_statistics
 
     return render_template("forms/food_type_form.html", food_type_form=form)
