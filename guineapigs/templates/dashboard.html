@@ -7,7 +7,7 @@
 	</div>
 	<div class="card-body">
 		<h4 class="card-title">vitamin c fulfilled</h4>
-		<p class="card-text">given today @ {{ vitamin_c[0].replace(tzinfo=utc).astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c[1] }}</p>
+		<p class="card-text">given today @ {{ vitamin_c.utc_date.replace(tzinfo=utc).astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c.user.name }}</p>
 {% else %}
 <div class="card text-white bg-secondary my-3">
 	<div class="card-header">Vitamin C</div>
