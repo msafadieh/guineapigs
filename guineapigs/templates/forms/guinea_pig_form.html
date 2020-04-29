@@ -2,6 +2,6 @@
 {% extends "forms/form.html" %}
 {% block modal_title %}Add guinea pig{% endblock %}
 {% block modal_body %}
-	{{ add_guinea_pig.csrf_token }}
-	{{ form_field(add_guinea_pig.name) }}
+	{{ guinea_pig_form.csrf_token }}
+	{{ form_field(guinea_pig_form.name) }}
 {% endblock %}

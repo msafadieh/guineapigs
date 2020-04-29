@@ -1,0 +1,9 @@
+{% from 'bootstrap/wtf.html' import form_field %}
+{% extends "forms/form.html" %}
+{% block modal_title %}Add food entry{% endblock %}
+{% block modal_body %}
+	{{ food_entry_form.csrf_token }}
+	{{ form_field(food_entry_form.food_type_id) }}
+	{{ form_field(food_entry_form.guinea_pig_ids) }}
+	{{ form_field(food_entry_form.notes) }}
+{% endblock %}

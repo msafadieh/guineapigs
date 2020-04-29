@@ -2,7 +2,7 @@
 {% extends "forms/form.html" %}
 {% block modal_title %}Add weight entry{% endblock %}
 {% block modal_body %}
-	{{ add_weight_entry.csrf_token }}
-	{{ form_field(add_weight_entry.value) }}
-	{{ form_field(add_weight_entry.guinea_pig_id) }}
+	{{ weight_entry_form.csrf_token }}
+	{{ form_field(weight_entry_form.value) }}
+	{{ form_field(weight_entry_form.guinea_pig_id) }}
 {% endblock %}
