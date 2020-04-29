@@ -278,5 +278,7 @@ def food_type_form(id=None):
     if food_entry:
         form.label.data = food_entry.label
         form.recommendations.data = food_entry.recommendations
+        form.is_hidden.data = food_entry.is_hidden
+        form.in_statistics.data = food_entry.in_statistics 
 
     return render_template("forms/food_type_form.html", food_type_form=form)
