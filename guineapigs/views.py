@@ -89,7 +89,9 @@ def vitaminc():
 @login_required
 def delete_food_entry():
     if (food_entry_id := request.form.get("id")) and food_entry_id.isdecimal():
-        FoodEntry.query.filter(FoodEntry.id == int(food_entry_id)).delete()
+        entry = FoodEntry.query.filter(FoodEntry.id == int(food_entry_id))
+        entry.first().guinea_pigs = []
+        entry.delete()
         db.session.commit()
     return redirect("/")
 
@@ -119,7 +121,9 @@ def add_food_entry(id=None):
     if entry:
         form.food_type_id.data = entry.food_type_id 
         form.notes.data = entry.notes
-        form.guinea_pigs_ids.data = [gp.id for gp in entry.guinea_pigs]
+        form.guinea_pig_ids.data = [gp.id for gp in entry.guinea_pig]
+    else:
+        form.guinea_pig_ids.data = [gp[0] for gp in form.guinea_pig_ids.choices]
 
     return render_template("forms/add_food_entry.html", add_food_entry=form)
 
