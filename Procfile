@@ -1,1 +1,0 @@
-web: gunicorn guineapigs:app
