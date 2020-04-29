@@ -46,7 +46,7 @@ class Entry:
     def user_id(cls):
         return db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    utc_date = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now().astimezone(pytz.utc))
+    utc_date = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     @classmethod
     def get_entries_from_today(cls):
         timezone = app.config["TIMEZONE"]
