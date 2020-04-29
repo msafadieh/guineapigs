@@ -1,5 +1,6 @@
 from flask import jsonify, redirect, render_template, request
 from flask_login import current_user, login_required, login_user, logout_user
+from pytz import utc
 from guineapigs.app import app, db
 from guineapigs.forms import *
 from guineapigs.models import *
@@ -61,6 +62,7 @@ def dashboard():
     return render_template("dashboard.html",
             food_entries=food_entries,
             weights=weights,
+            utc=utc,
             vitamin_c=vitamin_c,
             status=status)
 
