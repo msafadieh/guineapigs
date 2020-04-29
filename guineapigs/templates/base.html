@@ -11,12 +11,12 @@
   {% endblock %}
 </head>
 
-<body class="bg-light">
+<body>
   {% include "navbar.html" %}
   <div class="container">
     {% if current_user.is_authenticated %}
     <h4 class="my-3 text-right">
-      Hi, {{current_user.name}}! <a href="/logout">Not you?</a>
+      hi, {{current_user.name}}!</a>
     </h4>
     {% endif %}
     {% block content %}{% endblock %}

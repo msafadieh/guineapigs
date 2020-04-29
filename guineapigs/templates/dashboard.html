@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 {% if vitamin_c %}
-<div class="card text-white bg-success my-3">
+<div class="card text-white bg-primary my-3">
 	<div class="card-header d-flex justify-content-between align-items-center">
-		<h5>Vitamin C</h5>
+		<h5>vitamin c</h5>
 	</div>
 	<div class="card-body">
-		<h4 class="card-title">Vitamin C fulfilled</h4>
-		<p class="card-text">Given today @ {{ vitamin_c[0].astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c[1] }}</p>
+		<h4 class="card-title">vitamin c fulfilled</h4>
+		<p class="card-text">given today @ {{ vitamin_c[0].astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c[1] }}</p>
 {% else %}
-<div class="card text-white bg-danger my-3">
+<div class="card text-white bg-secondary my-3">
 	<div class="card-header">Vitamin C</div>
 	<div class="card-body">
 		<h4 class="card-title">No Vitamin C today</h4>
@@ -18,15 +18,15 @@
 	</div>
 </div>
 
-<div class="card text-white bg-info my-3">
+<div class="card border-secondary bg-light my-3">
 	<div class="card-header d-flex justify-content-between align-items-center">
-		<h5>Status</h5>
+		<h5>status</h5>
 		<form class="modal-form" action="/weight_entry/add">
-			<button class="btn btn-primary modal-btn" type="button">&plus; log weight</button>
+			<button class="btn btn-secondary modal-btn" type="button">&plus; log weight</button>
 		</form>
 	</div>
 	<div class="card-body">
-		<h4 class="card-title">Food statistics</h4>
+		<h4 class="card-title">food statistics</h4>
 		{% for key, value in status.items() %}
 		<p class="card-text"><span class="font-weight-bold">{{ key }}: </span>{{ value }}</p>
 		{% endfor %}
@@ -34,7 +34,7 @@
 	{% for gp_name, weight in weights %}
 	<div class="card-body">
 		<h4 class="card-title">{{ gp_name }}</h4>
-		<p class="card-text"><span class="font-weight-bold">Weight: </span>{% if weight %}{{ weight }}g{% else %}Unknown{% endif %}</p>
+		<p class="card-text"><span class="font-weight-bold">weight: </span>{% if weight %}{{ weight }}g{% else %}Unknown{% endif %}</p>
 	</div>
 	{% else %}
 	<div class="card-body">
@@ -43,9 +43,9 @@
 	{% endfor %}
 </div>
 
-<div class="card bg-light my-3">
+<div class="card border-primary bg-light my-3">
 	<div class="card-header d-flex justify-content-between align-items-center">
-		<h5>Food entries</h5>
+		<h5>food entries</h5>
 		<form class="modal-form" action="/food_entry/add">
 			<button class="btn btn-primary modal-btn" type="button">&plus; add</button>
 		</form>

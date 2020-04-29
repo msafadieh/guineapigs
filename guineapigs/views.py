@@ -9,9 +9,10 @@ from guineapigs.utils import beginning_of_day_utc
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if not (user := User.query.filter(User.name==form.name.data).first()):
+        name = form.name.data.lower().split(' ')[0]
+        if not (user := User.query.filter(User.name==name).first()):
             user = User()
-            user.name = form.name.data
+            user.name = name
             db.session.add(user)
             db.session.commit()
 
