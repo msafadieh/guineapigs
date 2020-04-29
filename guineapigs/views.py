@@ -58,7 +58,6 @@ def dashboard():
         db.session.query(FoodEntry)
         .filter(FoodEntry.utc_date >= begin_of_day)
         .order_by(FoodEntry.utc_date)
-        .all()
     )
 
     weights = (
@@ -77,17 +76,21 @@ def dashboard():
     )
     food_count = (
         db.session.query(FoodType.label, subq.c.count)
-        .join(subq, subq.c.food_type_id == FoodType.id)
+        .outerjoin(subq, subq.c.food_type_id == FoodType.id)
+        .filter(FoodType.in_statistics==True)
+        .filter(FoodType.is_hidden==False)
         .all()
     )
     food_latest = (
         db.session.query(FoodType.label, FoodEntry.utc_date)
-        .outerjoin(FoodEntry)
+        .join(FoodEntry)
         .distinct(FoodType.label)
+        .filter(FoodType.in_statistics==True)
+        .filter(FoodType.is_hidden==False)
         .order_by(FoodType.label, FoodEntry.utc_date.desc())
     )
     status = {}
-    food_latest = list(filter(lambda f: f[1], food_latest))
+    food_count = [(label, count or 0) for label, count in food_count]
     status["latest"] = max(food_latest, key=lambda f: f[1])[0]
     status["oldest"] = min(food_latest, key=lambda f: f[1])[0]
     status["most frequent"] = max(food_count, key=lambda f: f[1])[0]
@@ -155,7 +158,7 @@ def food_entry_form(id=None):
     form = FoodEntryForm()
     form.food_type_id.choices = [
         (food_entry.id, food_entry.label)
-        for food_entry in FoodType.query.order_by(FoodType.label).all()
+        for food_entry in FoodType.query.order_by(FoodType.label).filter(FoodType.is_hidden==False).all()
     ]
     form.guinea_pig_ids.choices = [
         (guinea_pig.id, guinea_pig.name)
@@ -266,6 +269,8 @@ def food_type_form(id=None):
         food_entry = food_entry or FoodType()
         food_entry.label = form.label.data
         food_entry.recommendations = form.recommendations.data
+        food_entry.is_hidden = form.is_hidden.data
+        food_entry.in_statistics = form.in_statistics.data
         db.session.add(food_entry)
         db.session.commit()
         return jsonify(status="ok")

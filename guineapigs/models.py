@@ -74,7 +74,8 @@ class FoodType(db.Model):
     label = db.Column(db.String(64), nullable=False)
     recommendations = db.Column(db.String(512))
     entries = db.relationship("FoodEntry")
-
+    in_statistics = db.Column(db.Boolean, nullable=False, default=True, info={'label': 'in statistics'})
+    is_hidden = db.Column(db.Boolean, nullable=False, default=False, info={'label': 'is hidden'})
 
 class Entry:
     """

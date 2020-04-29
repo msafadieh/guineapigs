@@ -4,5 +4,6 @@
 {% block modal_body %}
 	{{ food_type_form.csrf_token }}
 	{{ form_field(food_type_form.label) }}
-	{{ form_field(food_type_form.recommendations) }}
+	{{ form_field(food_type_form.is_hidden) }}
+	{{ form_field(food_type_form.in_statistics) }}
 {% endblock %}
