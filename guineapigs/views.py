@@ -55,8 +55,8 @@ def dashboard():
                             .distinct(FoodType.label)
                             .order_by(FoodType.label, FoodEntry.utc_date.desc()))
     status = {}
-    status["latest"] = max(food_latest, key=lambda f: f[1])[0]
-    status["oldest"] = min(food_latest, key=lambda f: f[1])[0]
+    status["latest"] = max(filter(bool, food_latest), key=lambda f: f[1])[0]
+    status["oldest"] = min(filter(bool, food_latest), key=lambda f: f[1])[0]
     status["most frequent"] = max(food_count, key=lambda f: f[1])[0]
     status["least frequent"] = min(food_count, key=lambda f: f[1])[0]
 
