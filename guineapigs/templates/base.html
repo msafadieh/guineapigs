@@ -16,7 +16,7 @@
   <div class="container">
     {% if current_user.is_authenticated %}
     <h4 class="my-3 text-right">
-      hi, {{current_user.name}}!</a>
+      hi, {{current_user.name}}!
     </h4>
     {% endif %}
     {% block content %}{% endblock %}
@@ -25,7 +25,6 @@
           <div id="modal-content" class="modal-content">
         </div>
       </div>
-    </div>
     {% block footer %}{% endblock %}
   </div>
 
