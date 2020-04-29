@@ -31,12 +31,13 @@ def logout_view():
 @app.route("/")
 @login_required
 def dashboard():
+    begin_of_day = beginning_of_day_tc()
     vitamin_c = (db.session.query(VitaminCEntry.utc_date, User.name)
-                              .filter(VitaminCEntry.utc_date >= beginning_of_day_utc())
+                              .filter(VitaminCEntry.utc_date >= begin_of_day)
                               .first())
     
     food_entries = (db.session.query(FoodEntry)
-                              .filter(FoodEntry.utc_date >= beginning_of_day_utc())
+                              .filter(FoodEntry.utc_date >= begin_of_day)
                               .order_by(FoodEntry.utc_date)
                               .all())
 
