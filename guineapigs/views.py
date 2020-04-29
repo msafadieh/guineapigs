@@ -31,7 +31,7 @@ def logout_view():
 @app.route("/")
 @login_required
 def dashboard():
-    begin_of_day = beginning_of_day_tc()
+    begin_of_day = beginning_of_day_utc()
     vitamin_c = (db.session.query(VitaminCEntry.utc_date, User.name)
                               .filter(VitaminCEntry.utc_date >= begin_of_day)
                               .first())
