@@ -125,6 +125,12 @@ class VitaminCEntry(db.Model, Entry):
             VitaminCEntry.utc_date >= beginning_of_day_utc()
         ).first()
 
+    @classmethod
+    def delete_today(cls):
+        return VitaminCEntry.query.filter(
+            VitaminCEntry.utc_date >= beginning_of_day_utc()
+        ).delete()
+
 
 class WeightEntry(db.Model, Entry):
     """

@@ -138,11 +138,13 @@ def vitaminc():
     """
     adds vitaminc entry if it doesn't exist already
     """
-    if not VitaminCEntry.get_today():
+    if VitaminCEntry.get_today():
+        VitaminCEntry.delete_today()
+    else:
         entry = VitaminCEntry()
         entry.user = current_user
         db.session.add(entry)
-        db.session.commit()
+    db.session.commit()
     return redirect(url_for("dashboard"))
 
 
