@@ -16,9 +16,11 @@
   {% include "navbar.html" %}
   <div class="container">
     {% if current_user.is_authenticated %}
-    <h3 class="my-3 text-right">
-      hi, {{current_user.name}}!
-    </h3>
+	<h4 class="text-right my-4">
+		<span class="bg-light border border-primary p-2 rounded">
+		hi, {{current_user.name}}!
+		</span>
+	</h4>
     {% endif %}
     {% block content %}{% endblock %}
     <div id="modal" class="modal fade" tabindex="-1" role="dialog">
