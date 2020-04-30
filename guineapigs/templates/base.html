@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/static/bootstrap.min.css">
   <link rel="stylesheet" href="/static/style.css">
+  <link href="https://unpkg.com/pattern.css" rel="stylesheet">
   <title>{{ config["TITLE"] }}</title>
   {% endblock %}
 </head>
@@ -15,16 +16,17 @@
   {% include "navbar.html" %}
   <div class="container">
     {% if current_user.is_authenticated %}
-    <h4 class="my-3 text-right">
+    <h3 class="my-3 text-right">
       hi, {{current_user.name}}!
-    </h4>
+    </h3>
     {% endif %}
     {% block content %}{% endblock %}
     <div id="modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
-          <div id="modal-content" class="modal-content">
+        <div id="modal-content" class="modal-content">
         </div>
       </div>
+	</div>
     {% block footer %}{% endblock %}
   </div>
 

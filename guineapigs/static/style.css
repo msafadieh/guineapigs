@@ -1,3 +1,11 @@
+body {
+  background-image: radial-gradient(#78c2adaa 1.5px, transparent 1.5px),radial-gradient(#F3969AAA 1.5px, transparent 1.5px);
+  background-size: calc(20 * 1.5px) calc(20 * 1.5px);
+  background-position: 0 0,calc(10 * 1.5px) calc(10 * 1.5px);
+  font-family: 'Montserrat', sans-serif;
+}
+
+
 @media only screen and (max-width: 576px) {
 	h3 {
 		font-size: 1.5rem;

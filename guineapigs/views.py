@@ -1,13 +1,22 @@
 """
     web routes
 """
-from flask import abort, jsonify, redirect, render_template, request
+from flask import abort, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from pytz import utc
 from guineapigs.app import app, db
 from guineapigs.forms import *
 from guineapigs.models import *
 from guineapigs.utils import beginning_of_day_utc, is_safe_url
+
+
+@app.context_processor
+def navbar():
+    return {
+        "NAV_PAGES": NAV_PAGES_LOGGED_IN
+        if current_user.is_authenticated
+        else NAV_PAGES_LOGGED_OUT
+    }
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -26,12 +35,11 @@ def login():
 
         login_user(user, remember=True)
 
-        next_ = request.args.get("next")
-        if next_ and not is_safe_url(next_):
-            return abort(400)
+    if (next_ := request.args.get("next")) and not is_safe_url(next_, request.host_url):
+        return abort(400)
 
-        return redirect(next_ or "/")
-
+    if current_user.is_authenticated:
+        return redirect(next_ or url_for("dashboard"))
     return render_template("login.html", login_form=form)
 
 
@@ -41,7 +49,7 @@ def logout_view():
     logs user out and redirects them to home
     """
     logout_user()
-    return redirect("/")
+    return redirect(url_for("login"))
 
 
 @app.route("/")
@@ -51,13 +59,32 @@ def dashboard():
     displays dashboard with vitamin c info, today's food entries and stats,
     and guinea pig weights
     """
-    begin_of_day = beginning_of_day_utc()
-    vitamin_c = VitaminCEntry.get_today()
-
     food_entries = (
         db.session.query(FoodEntry)
-        .filter(FoodEntry.utc_date >= begin_of_day)
+        .filter(FoodEntry.utc_date >= beginning_of_day_utc())
         .order_by(FoodEntry.utc_date)
+    )
+
+    return render_template(
+        "dashboard.html",
+        food_entries=food_entries,
+        utc=utc,
+        vitamin_c=VitaminCEntry.get_today(),
+    )
+
+
+@app.route("/statistics")
+@login_required
+def statistics():
+    """
+    displays statistics page with weight info and food stats
+    """
+    subq = (
+        db.session.query(
+            FoodEntry.food_type_id, db.func.count(FoodEntry.food_type_id).label("count")
+        )
+        .group_by(FoodEntry.food_type_id)
+        .subquery()
     )
 
     weights = (
@@ -67,13 +94,6 @@ def dashboard():
         .order_by(GuineaPig.name, WeightEntry.utc_date.desc())
     )
 
-    subq = (
-        db.session.query(
-            FoodEntry.food_type_id, db.func.count(FoodEntry.food_type_id).label("count")
-        )
-        .group_by(FoodEntry.food_type_id)
-        .subquery()
-    )
     food_count = (
         db.session.query(FoodType.label, subq.c.count)
         .outerjoin(subq, subq.c.food_type_id == FoodType.id)
@@ -91,19 +111,12 @@ def dashboard():
     )
     status = {}
     food_count = [(label, count or 0) for label, count in food_count]
-    status["latest"] = max(food_latest, key=lambda f: f[1])[0]
-    status["oldest"] = min(food_latest, key=lambda f: f[1])[0]
-    status["most frequent"] = max(food_count, key=lambda f: f[1])[0]
-    status["least frequent"] = min(food_count, key=lambda f: f[1])[0]
-
-    return render_template(
-        "dashboard.html",
-        food_entries=food_entries,
-        weights=weights,
-        utc=utc,
-        vitamin_c=vitamin_c,
-        status=status,
-    )
+    if food_count:
+        status["latest"] = max(food_latest, key=lambda f: f[1])[0]
+        status["oldest"] = min(food_latest, key=lambda f: f[1])[0]
+        status["most frequent"] = max(food_count, key=lambda f: f[1])[0]
+        status["least frequent"] = min(food_count, key=lambda f: f[1])[0]
+    return render_template("statistics.html", status=status, weights=weights)
 
 
 @app.route("/settings")
@@ -130,7 +143,7 @@ def vitaminc():
         entry.user = current_user
         db.session.add(entry)
         db.session.commit()
-    return redirect("/")
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/food_entry/delete", methods=["POST"])
@@ -145,7 +158,7 @@ def delete_food_entry():
         entry.first().guinea_pigs = []
         entry.delete()
         db.session.commit()
-    return redirect("/")
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/food_entry/add", methods=["GET", "POST"])
@@ -284,3 +297,13 @@ def food_type_form(id=None):
         form.in_statistics.data = food_entry.in_statistics
 
     return render_template("forms/food_type_form.html", food_type_form=form)
+
+
+NAV_PAGES_LOGGED_IN = (
+    ("dashboard", "dashboard"),
+    ("statistics", "statistics"),
+    ("settings", "settings"),
+    ("log out", "logout_view"),
+)
+
+NAV_PAGES_LOGGED_OUT = (("log in", "login",),)

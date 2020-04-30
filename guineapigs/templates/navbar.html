@@ -5,21 +5,11 @@
 	</button>
 	<div class="navbar-collapse collapse" id="navbarNav">
 			<ul class="navbar-nav">
-			  {% if current_user.is_authenticated %}
+			  {% for label, view in NAV_PAGES %}
 			  <li class="nav-item">
-					  <a class="nav-link{% if request.path == '/' %} active{% endif %}" href="/">dashboard</a>
+					  <a class="nav-link{% if request.path == url_for(view) %} active{% endif %}" href="{{ url_for(view) }}">{{ label }}</a>
 			  </li>
-			  <li class="nav-item">
-					  <a class="nav-link{% if request.path == '/settings' %} active{% endif %}" href="/settings">settings</a>
-			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/logout">logout</a>
-			  </li>
-			  {% else %}
-			  <li class="nav-item">
-				<a class="nav-link{% if request.path == '/login' %} active{% endif %}" href="/login">login</a>
-			  </li>
-			  {% endif %}
+			  {% endfor %}
 			</ul>
 	</div>
 	{% block navbar %}{% endblock %}

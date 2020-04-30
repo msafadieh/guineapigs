@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card bg-primary text-white my-3">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h5>statistics</h5>
+		<form class="modal-form" action="/weight_entry/add">
+			<button class="btn btn-secondary modal-btn" type="button">&plus; log weight</button>
+		</form>
+	</div>
+	<div class="card-body">
+		<h4 class="card-title">food statistics</h4>
+		{% for key, value in status.items() %}
+		<p class="card-text"><span class="font-weight-bold">{{ key }}: </span>{{ value }}</p>
+		{% endfor %}
+	</div>
+	{% for gp_name, weight in weights %}
+	<div class="card-body">
+		<h4 class="card-title">{{ gp_name }}</h4>
+		<p class="card-text"><span class="font-weight-bold">weight: </span>{% if weight %}{{ weight }}g{% else %}Unknown{% endif %}</p>
+	</div>
+	{% else %}
+	<div class="card-body">
+		<h4 class="Title">No guinea pigs registered</h4>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

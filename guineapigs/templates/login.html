@@ -1,9 +1,16 @@
 {% from 'bootstrap/wtf.html' import form_field %}
 {% extends "base.html" %}
 {% block content %}
-<form class="mt-2 mx-auto" style="max-width: 300px;" action="/login" method="POST">
-	{{ login_form.csrf_token }}
-	{{ form_field(login_form.name) }}
-	<button type="submit" class="btn btn-primary btn-lg btn-block mt-1">save</button>
-</form>
+<div class="card bg-light my-3">
+	<div class="card-header">
+		<h4>Log in</h4>
+	</div>
+	<div class="card-body">
+		<form class="mt-2 mx-auto" style="max-width: 300px;" action="/login" method="POST">
+			{{ login_form.csrf_token }}
+			{{ form_field(login_form.name) }}
+			<button type="submit" class="btn btn-primary btn-lg btn-block mt-1">save</button>
+		</form>
+	</div>
+</div>
 {% endblock %}
