@@ -5,7 +5,7 @@
 		<h5>vitamin c</h5>
 	</div>
 	<div class="card-body">
-			<h4 class="card-title"><a href="{{ url_for("vitaminc") }}" class="bg-white d-inline-block rounded mr-2 py-1 px-2"><span{% if not vitamin_c %} style="opacity: 0"{% endif %}>&#10004;</span></a>vitamin c {% if not vitamin_c %}not {% endif %}fulfilled</h4>
+			<h4 class="card-title"><a href="{{ url_for("vitaminc") }}" class="bg-white text-decoration-none rounded mr-2 py-1 px-2"><span{% if not vitamin_c %} style="opacity: 0"{% endif %}>&#10004;</span></a>vitamin c {% if not vitamin_c %}not {% endif %}fulfilled</h4>
 		{% if vitamin_c %}
 		<p class="card-text">given today @ {{ vitamin_c.utc_date.replace(tzinfo=utc).astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c.user.name }}</p>
 		{% endif %}
