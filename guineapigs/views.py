@@ -62,7 +62,7 @@ def dashboard():
     food_entries = (
         db.session.query(FoodEntry)
         .filter(FoodEntry.utc_date >= beginning_of_day_utc())
-        .order_by(FoodEntry.utc_date)
+        .order_by(FoodEntry.utc_date.desc())
     )
 
     return render_template(
