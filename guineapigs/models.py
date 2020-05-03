@@ -143,3 +143,4 @@ class WeightEntry(db.Model, Entry):
     guinea_pig_id = db.Column(
         db.Integer, db.ForeignKey("guinea_pig.id"), nullable=False
     )
+    guinea_pig = db.relationship("GuineaPig")

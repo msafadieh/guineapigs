@@ -1,7 +1,7 @@
 """
     utitlities to make work easier
 """
-from datetime import datetime
+from datetime import datetime, time, timedelta
 from urllib.parse import urlparse, urljoin
 import pytz
 from guineapigs.app import app
@@ -20,6 +20,14 @@ def beginning_of_day_utc():
         .replace(tzinfo=None)
     )
 
+def date_to_datetime(date):
+    return datetime.combine(date, time())
+
+def beginning_of_week_utc():
+    """
+    same as beginning_of_day_utc but subtracts 6 days
+    """
+    return beginning_of_day_utc() - timedelta(days=6)
 
 def is_safe_url(target, host_url):
     """

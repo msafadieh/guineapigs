@@ -5,6 +5,10 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+.form-inline * {
+	margin-left: .25rem;
+	margin-right: .25rem;
+}
 
 @media only screen and (max-width: 576px) {
 	h3 {

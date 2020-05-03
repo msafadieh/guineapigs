@@ -1,13 +1,14 @@
 """
     web routes
 """
+import heapq
 from flask import abort, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from pytz import utc
 from guineapigs.app import app, db
 from guineapigs.forms import *
 from guineapigs.models import *
-from guineapigs.utils import beginning_of_day_utc, is_safe_url
+from guineapigs.utils import beginning_of_day_utc, beginning_of_week_utc, date_to_datetime, is_safe_url
 
 
 @app.context_processor
@@ -71,6 +72,56 @@ def dashboard():
         utc=utc,
         vitamin_c=VitaminCEntry.get_today(),
     )
+
+
+@app.route("/history", methods=["GET", "POST"])
+@login_required
+def history():
+    """
+    displays history of all entries
+    """
+    today = beginning_of_day_utc()
+    beginning_of_week = beginning_of_week_utc()
+    form = HistoryForm(request.form)
+
+    start = end = None
+
+    if request.method == 'GET':
+        start = beginning_of_week
+        end = today
+        form.start.data = beginning_of_week.date()
+        form.end.data = today.date()
+    elif form.validate():
+        start = date_to_datetime(form.start.data)
+        end = date_to_datetime(form.end.data)
+
+    entries = []
+    if start and end:
+        food_entries = (
+            db.session.query(FoodEntry)
+            .filter(FoodEntry.utc_date >= start)
+            .filter(FoodEntry.utc_date <= end)
+            .order_by(FoodEntry.utc_date)
+        )
+        weight_entries = (
+            db.session.query(WeightEntry)
+            .filter(WeightEntry.utc_date >= start)
+            .filter(WeightEntry.utc_date <= end)
+            .order_by(WeightEntry.utc_date)
+        )
+        vitamin_c_entries = (
+            db.session.query(VitaminCEntry)
+            .filter(VitaminCEntry.utc_date >= start)
+            .filter(VitaminCEntry.utc_date <= end)
+            .order_by(VitaminCEntry.utc_date)
+        )
+
+        food_entries = ((f.utc_date.astimezone(app.config["TIMEZONE"]), "🍽️", f.food_type.label, ", ".join(gp.name for gp in f.guinea_pigs), f.user.name, ) for f in food_entries)
+        weight_entries = ((w.utc_date.astimezone(app.config["TIMEZONE"]), "⚖️", w.value, w.guinea_pig.name, w.user.name, ) for w in weight_entries)
+        vitamin_c_entries = ((v.utc_date.astimezone(app.config["TIMEZONE"]), "🌻", "", "", v.user.name, ) for v in vitamin_c_entries)
+        entries = heapq.merge(food_entries, weight_entries, vitamin_c_entries)
+
+    return render_template("history.html", form=form, entries=entries)
 
 
 @app.route("/statistics")
@@ -302,10 +353,11 @@ def food_type_form(id=None):
 
 
 NAV_PAGES_LOGGED_IN = (
-    ("dashboard", "dashboard"),
-    ("statistics", "statistics"),
-    ("settings", "settings"),
-    ("log out", "logout_view"),
+    ("dashboard", "dashboard", ),
+    ("history", "history", ),
+    ("statistics", "statistics", ),
+    ("settings", "settings", ),
+    ("log out", "logout_view", ),
 )
 
 NAV_PAGES_LOGGED_OUT = (("log in", "login",),)

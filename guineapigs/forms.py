@@ -2,7 +2,8 @@
     declarations of HTML forms to get user data
 """
 from flask_wtf import FlaskForm
-from wtforms.fields import SelectField, SelectMultipleField, StringField
+from wtforms.fields import DateField, SelectField, SelectMultipleField, StringField
+from wtforms.form import Form
 from wtforms.validators import DataRequired
 from wtforms.widgets import CheckboxInput, ListWidget
 from wtforms_alchemy import model_form_factory
@@ -14,6 +15,7 @@ __all__ = (
     "FoodEntryForm",
     "WeightEntryForm",
     "LoginForm",
+    "HistoryForm",
 )
 
 ModelForm = model_form_factory(FlaskForm)
@@ -76,3 +78,17 @@ class LoginForm(ModelForm):
     name = StringField(
         label="first name", validators=[DataRequired("name can't be blank")]
     )
+
+class HistoryForm(Form):
+    """
+    fields:
+        - start: date
+        - end: date
+    """
+
+    start = DateField(
+            label="start",
+            validators=[DataRequired()])
+    end = DateField(
+            label="end",
+            validators=[DataRequired()])
