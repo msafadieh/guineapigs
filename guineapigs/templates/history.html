@@ -5,7 +5,7 @@
 	<div class="card-header">
 		<h5>search</h5>
 	</div>
-	<div class="card-body overflow-auto">
+	<div class="card-body">
 		<form class="mt-2 mx-auto" action="/history" method="POST">
 			{{ form.csrf_token }}
 			{{ form_field(form.start) }}
@@ -19,7 +19,7 @@
 	<div class="card-header">
 		<h5>results</h5>
 	</div>
-	<div class="card-body">
+	<div class="card-body overflow-auto">
 		<table class="table table-hover">
 			<thead>
 					<th scope="col">time</th>
