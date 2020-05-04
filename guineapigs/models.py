@@ -78,7 +78,10 @@ class FoodType(db.Model):
         db.Boolean, nullable=False, default=True, info={"label": "show in statistics"}
     )
     is_hidden = db.Column(
-        db.Boolean, nullable=False, default=False, info={"label": "hide in food entry list"}
+        db.Boolean,
+        nullable=False,
+        default=False,
+        info={"label": "hide in food entry list"},
     )
 
 
@@ -87,6 +90,23 @@ class Entry:
     Entry base class that defines a user_id foreign key and timestamp
     """
 
+    utc_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @classmethod
+    def get_in_time_range(cls, start=None, end=None):
+        if not (start or end):
+            return []
+
+        query = db.session.query(cls).order_by(cls.utc_date)
+
+        if start:
+            query = query.filter(cls.utc_date >= start)
+
+        if end:
+            query = query.filter(cls.utc_date < end)
+
+        return query.all()
+
     @declared_attr
     def user_id(cls):
         return db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -94,8 +114,6 @@ class Entry:
     @declared_attr
     def user(cls):
         return db.relationship("User")
-
-    utc_date = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class FoodEntry(db.Model, Entry):

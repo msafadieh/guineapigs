@@ -8,7 +8,13 @@ from pytz import utc
 from guineapigs.app import app, db
 from guineapigs.forms import *
 from guineapigs.models import *
-from guineapigs.utils import beginning_of_day_utc, beginning_of_week_utc, date_to_datetime, is_safe_url
+from guineapigs.utils import (
+    beginning_of_day_utc,
+    beginning_of_week_utc,
+    date_to_datetime,
+    is_safe_url,
+    next_day,
+)
 
 
 @app.context_processor
@@ -86,7 +92,7 @@ def history():
 
     start = end = None
 
-    if request.method == 'GET':
+    if request.method == "GET":
         start = beginning_of_week
         end = today
         form.start.data = beginning_of_week.date()
@@ -97,28 +103,35 @@ def history():
 
     entries = []
     if start and end:
+        end = next_day(end)
+        food_entries = FoodEntry.get_in_time_range(start, end)
+        weight_entries = WeightEntry.get_in_time_range(start, end)
+        vitamin_c_entries = VitaminCEntry.get_in_time_range(start, end)
+
         food_entries = (
-            db.session.query(FoodEntry)
-            .filter(FoodEntry.utc_date >= start)
-            .filter(FoodEntry.utc_date <= end)
-            .order_by(FoodEntry.utc_date)
+            (
+                f.utc_date.astimezone(app.config["TIMEZONE"]),
+                "🍽️",
+                f.food_type.label,
+                ", ".join(gp.name for gp in f.guinea_pigs),
+                f.user.name,
+            )
+            for f in food_entries
         )
         weight_entries = (
-            db.session.query(WeightEntry)
-            .filter(WeightEntry.utc_date >= start)
-            .filter(WeightEntry.utc_date <= end)
-            .order_by(WeightEntry.utc_date)
+            (
+                w.utc_date.astimezone(app.config["TIMEZONE"]),
+                "⚖️",
+                w.value,
+                w.guinea_pig.name,
+                w.user.name,
+            )
+            for w in weight_entries
         )
         vitamin_c_entries = (
-            db.session.query(VitaminCEntry)
-            .filter(VitaminCEntry.utc_date >= start)
-            .filter(VitaminCEntry.utc_date <= end)
-            .order_by(VitaminCEntry.utc_date)
+            (v.utc_date.astimezone(app.config["TIMEZONE"]), "🌻", "", "", v.user.name,)
+            for v in vitamin_c_entries
         )
-
-        food_entries = ((f.utc_date.astimezone(app.config["TIMEZONE"]), "🍽️", f.food_type.label, ", ".join(gp.name for gp in f.guinea_pigs), f.user.name, ) for f in food_entries)
-        weight_entries = ((w.utc_date.astimezone(app.config["TIMEZONE"]), "⚖️", w.value, w.guinea_pig.name, w.user.name, ) for w in weight_entries)
-        vitamin_c_entries = ((v.utc_date.astimezone(app.config["TIMEZONE"]), "🌻", "", "", v.user.name, ) for v in vitamin_c_entries)
         entries = heapq.merge(food_entries, weight_entries, vitamin_c_entries)
 
     return render_template("history.html", form=form, entries=entries)
@@ -321,17 +334,17 @@ def guinea_pig_form(id=None):
 
 
 @app.route("/food_type/add", methods=["GET", "POST"])
-@app.route("/food_type/edit/<int:id>", methods=["GET", "POST"])
+@app.route("/food_type/edit/<int:id_>", methods=["GET", "POST"])
 @login_required
-def food_type_form(id=None):
+def food_type_form(id_=None):
     """
     insert/edit guinea pigs
     """
     form = FoodTypeForm()
     food_entry = None
 
-    if id:
-        food_entry = FoodType.query.filter(FoodType.id == id).first()
+    if id_:
+        food_entry = FoodType.query.filter(FoodType.id == id_).first()
 
     if form.validate_on_submit():
         food_entry = food_entry or FoodType()
@@ -353,11 +366,11 @@ def food_type_form(id=None):
 
 
 NAV_PAGES_LOGGED_IN = (
-    ("dashboard", "dashboard", ),
-    ("history", "history", ),
-    ("statistics", "statistics", ),
-    ("settings", "settings", ),
-    ("log out", "logout_view", ),
+    ("dashboard", "dashboard",),
+    ("history", "history",),
+    ("statistics", "statistics",),
+    ("settings", "settings",),
+    ("log out", "logout_view",),
 )
 
 NAV_PAGES_LOGGED_OUT = (("log in", "login",),)

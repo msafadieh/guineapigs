@@ -79,6 +79,7 @@ class LoginForm(ModelForm):
         label="first name", validators=[DataRequired("name can't be blank")]
     )
 
+
 class HistoryForm(Form):
     """
     fields:
@@ -86,9 +87,5 @@ class HistoryForm(Form):
         - end: date
     """
 
-    start = DateField(
-            label="start",
-            validators=[DataRequired()])
-    end = DateField(
-            label="end",
-            validators=[DataRequired()])
+    start = DateField(label="start", validators=[DataRequired()])
+    end = DateField(label="end", validators=[DataRequired()])
