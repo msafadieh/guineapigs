@@ -18,11 +18,13 @@ from guineapigs.utils import (
 
 
 @app.context_processor
-def navbar():
+def variables():
     return {
         "NAV_PAGES": NAV_PAGES_LOGGED_IN
         if current_user.is_authenticated
-        else NAV_PAGES_LOGGED_OUT
+        else NAV_PAGES_LOGGED_OUT,
+
+        "UTC": utc
     }
 
 
@@ -110,7 +112,7 @@ def history():
 
         food_entries = (
             (
-                f.utc_date.astimezone(app.config["TIMEZONE"]),
+                f.utc_date,
                 "🍽️",
                 f.food_type.label,
                 ", ".join(gp.name for gp in f.guinea_pigs),
@@ -120,7 +122,7 @@ def history():
         )
         weight_entries = (
             (
-                w.utc_date.astimezone(app.config["TIMEZONE"]),
+                w.utc_date,
                 "⚖️",
                 w.value,
                 w.guinea_pig.name,
@@ -129,7 +131,7 @@ def history():
             for w in weight_entries
         )
         vitamin_c_entries = (
-            (v.utc_date.astimezone(app.config["TIMEZONE"]), "🌻", "", "", v.user.name,)
+            (v.utc_date, "🌻", "", "", v.user.name,)
             for v in vitamin_c_entries
         )
         entries = heapq.merge(food_entries, weight_entries, vitamin_c_entries)

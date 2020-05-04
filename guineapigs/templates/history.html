@@ -22,20 +22,22 @@
 	<div class="card-body overflow-auto">
 		<table class="table table-hover">
 			<thead>
+				<tr>
 					<th scope="col">time</th>
 					<th scope="col">type</th>
 					<th scope="col">value</th>
 					<th scope="col">guinea pigs</th>
 					<th scope="col">person</th>
+				</tr>
 			</thead>
 			<tbody>
 				{% for date, type, value, guinea_pigs, user in entries %}
 				<tr>
-					<th scope="row">{{ date.strftime("%Y-%m-%d %H:%M %p") }}</th>
-					<th>{{ type }}</th>
-					<th>{{ value }}</th>
-					<th>{{ guinea_pigs }}</th>
-					<th>{{ user }}</th>
+					<th scope="row">{{ date.replace(tzinfo=UTC).astimezone(config["TIMEZONE"]).strftime("%Y-%m-%d %H:%M %p") }}</th>
+					<td>{{ type }}</td>
+					<td>{{ value }}</td>
+					<td>{{ guinea_pigs }}</td>
+					<td>{{ user }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
