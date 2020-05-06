@@ -14,6 +14,7 @@ from guineapigs.utils import (
     date_to_datetime,
     is_safe_url,
     next_day,
+    strftime,
 )
 
 
@@ -23,8 +24,7 @@ def variables():
         "NAV_PAGES": NAV_PAGES_LOGGED_IN
         if current_user.is_authenticated
         else NAV_PAGES_LOGGED_OUT,
-
-        "UTC": utc
+        "strftime": strftime,
     }
 
 
@@ -77,7 +77,6 @@ def dashboard():
     return render_template(
         "dashboard.html",
         food_entries=food_entries,
-        utc=utc,
         vitamin_c=VitaminCEntry.get_today(),
     )
 
@@ -121,18 +120,11 @@ def history():
             for f in food_entries
         )
         weight_entries = (
-            (
-                w.utc_date,
-                "⚖️",
-                w.value,
-                w.guinea_pig.name,
-                w.user.name,
-            )
+            (w.utc_date, "⚖️", w.value, w.guinea_pig.name, w.user.name,)
             for w in weight_entries
         )
         vitamin_c_entries = (
-            (v.utc_date, "🌻", "", "", v.user.name,)
-            for v in vitamin_c_entries
+            (v.utc_date, "🌻", "", "", v.user.name,) for v in vitamin_c_entries
         )
         entries = heapq.merge(food_entries, weight_entries, vitamin_c_entries)
 
@@ -145,13 +137,7 @@ def statistics():
     """
     displays statistics page with weight info and food stats
     """
-    subq = (
-        db.session.query(
-            FoodEntry.food_type_id, db.func.count(FoodEntry.food_type_id).label("count")
-        )
-        .group_by(FoodEntry.food_type_id)
-        .subquery()
-    )
+    status = {}
 
     weights = (
         db.session.query(GuineaPig.name, WeightEntry.value)
@@ -160,28 +146,36 @@ def statistics():
         .order_by(GuineaPig.name, WeightEntry.utc_date.desc())
     )
 
-    food_count = (
-        db.session.query(FoodType.label, subq.c.count)
-        .outerjoin(subq, subq.c.food_type_id == FoodType.id)
-        .filter(FoodType.in_statistics == True)
-        .filter(FoodType.is_hidden == False)
-        .all()
+    count_query = (
+        db.session.query(FoodEntry.food_type_id, FoodType.label)
+        .outerjoin(FoodEntry)
+        .filter(FoodType.in_statistics == True, FoodType.is_hidden == False)
+        .subquery()
     )
-    food_latest = (
-        db.session.query(FoodType.label, FoodEntry.utc_date)
-        .join(FoodEntry)
-        .distinct(FoodType.label)
-        .filter(FoodType.in_statistics == True)
-        .filter(FoodType.is_hidden == False)
-        .order_by(FoodType.label, FoodEntry.utc_date.desc())
+
+    food_count = db.session.query(
+        count_query.c.label, db.func.count(count_query.c.food_type_id).label("count")
+    ).group_by(count_query.c.label)
+
+    latest_query = (
+        db.session.query(FoodType.label, db.func.max(FoodEntry.utc_date).label("max"))
+        .join(FoodType)
+        .filter(FoodType.in_statistics == True, FoodType.is_hidden == False)
+        .group_by(FoodType.label)
     )
-    status = {}
-    food_count = [(label, count or 0) for label, count in food_count]
-    if food_count:
-        status["latest"] = max(food_latest, key=lambda f: f[1])[0]
-        status["oldest"] = min(food_latest, key=lambda f: f[1])[0]
-        status["most frequent"] = max(food_count, key=lambda f: f[1])[0]
-        status["least frequent"] = min(food_count, key=lambda f: f[1])[0]
+
+    if (least_frequent := food_count.order_by(db.text("count")).first()) :
+        status["least frequent"] = least_frequent[0]
+
+    if (most_frequent := food_count.order_by(db.desc(db.text("count"))).first()) :
+        status["most frequent"] = most_frequent[0]
+
+    if (oldest := latest_query.order_by(db.text("max")).first()) :
+        status["oldest"] = oldest[0]
+
+    if (latest := latest_query.order_by(db.desc(db.text("max"))).first()) :
+        status["latest"] = latest[0]
+
     return render_template("statistics.html", status=status, weights=weights)
 
 

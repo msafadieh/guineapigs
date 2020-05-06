@@ -39,6 +39,17 @@ def next_day(date):
     return date + timedelta(days=1)
 
 
+def strftime(datetime_instance, str_format):
+    """
+    converts to correct timezone and then formats
+    """
+    return (
+        datetime_instance.replace(tzinfo=pytz.utc)
+        .astimezone(app.config["TIMEZONE"])
+        .strftime(str_format)
+    )
+
+
 def is_safe_url(target, host_url):
     """
     checks target URL is safe to redirect to

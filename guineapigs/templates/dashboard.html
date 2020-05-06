@@ -7,7 +7,7 @@
 	<div class="card-body">
 			<h4 class="card-title"><a href="{{ url_for("vitaminc") }}" class="bg-white text-decoration-none rounded mr-2 py-1 px-2"><span{% if not vitamin_c %} style="opacity: 0"{% endif %}>&#10004;</span></a>vitamin c {% if not vitamin_c %}not {% endif %}fulfilled</h4>
 		{% if vitamin_c %}
-		<p class="card-text">given today @ {{ vitamin_c.utc_date.replace(tzinfo=utc).astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ vitamin_c.user.name }}</p>
+		<p class="card-text">given today @ {{ strftime(vitamin_c.utc_date, "%l:%M %p") }} by {{ vitamin_c.user.name }}</p>
 		{% endif %}
 	</div>
 </div>
@@ -25,7 +25,7 @@
     	<div class="w-100">
       		<div class="d-flex w-100 justify-content-between">
         		<h5 class="mb-1 align-self-center">{{ entry.food_type.label }}</h5>
-        		<p class="small align-self-start text-right mb-0 ml-2">{{ entry.utc_date.replace(tzinfo=utc).astimezone(config["TIMEZONE"]).strftime("%l:%M %p") }} by {{ entry.user.name }}</p>
+        		<p class="small align-self-start text-right mb-0 ml-2">{{ strftime(entry.utc_date, "%l:%M %p") }} by {{ entry.user.name }}</p>
       		</div>
       {% if entry.notes %}
       <p class="mb-0">

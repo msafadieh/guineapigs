@@ -33,7 +33,7 @@
 			<tbody>
 				{% for date, type, value, guinea_pigs, user in entries %}
 				<tr>
-					<th scope="row">{{ date.replace(tzinfo=UTC).astimezone(config["TIMEZONE"]).strftime("%Y-%m-%d %H:%M %p") }}</th>
+					<th scope="row">{{ strftime(date, "%Y-%m-%d %H:%M %p") }}</th>
 					<td>{{ type }}</td>
 					<td>{{ value }}</td>
 					<td>{{ guinea_pigs }}</td>

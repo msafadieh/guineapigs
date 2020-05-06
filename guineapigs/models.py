@@ -68,7 +68,6 @@ class FoodType(db.Model):
     Type of food to be used with the entry (and recommendations on it) 
     """
 
-    __tablename__ = "guinea_pig"
     __tablename__ = "food_type"
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.String(64), nullable=False)
