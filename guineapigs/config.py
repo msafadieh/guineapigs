@@ -10,6 +10,7 @@ class Config:
         Flask config class
     """
 
+    REMEMBER_COOKIE_SECURE = True
     SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
     SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get(
         "SQLALCHEMY_TRACK_MODIFICATIONS", False
