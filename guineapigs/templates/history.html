@@ -31,7 +31,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for date, type, value, guinea_pigs, user in entries %}
+				{% for date, type, value, guinea_pigs, user in entries|sort(reverse=True)  %}
 				<tr>
 					<th scope="row">{{ strftime(date, "%Y-%m-%d %H:%M %p") }}</th>
 					<td>{{ type }}</td>
