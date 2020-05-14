@@ -96,7 +96,7 @@ class Entry:
         if not (start or end):
             return []
 
-        query = db.session.query(cls).order_by(cls.utc_date)
+        query = db.session.query(cls).order_by(cls.utc_date.desc())
 
         if start:
             query = query.filter(cls.utc_date >= start)
