@@ -169,7 +169,7 @@ def food_entry_form(id_=None):
     form.food_type_id.choices = [
         (food_entry.id, food_entry.label)
         for food_entry in models.FoodType.query.order_by(models.FoodType.label)
-        .filter(not models.FoodType.is_hidden)
+        .filter(models.FoodType.is_hidden == False) # pylint: disable=singleton-comparison
         .all()
     ]
     form.guinea_pig_ids.choices = [
