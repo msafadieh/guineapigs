@@ -105,7 +105,9 @@ class Entry:
         if not (start or end):
             return []
 
-        query = db.session.query(cls).order_by(cls.utc_date) # pylint: disable=no-member
+        query = db.session.query(cls).order_by(
+            cls.utc_date
+        )  # pylint: disable=no-member
 
         if start:
             query = query.filter(cls.utc_date >= start)
@@ -150,20 +152,27 @@ class FoodEntry(db.Model, Entry):
         """
         statistics = {}
         count_query = (
-            db.session.query(FoodEntry.food_type_id, FoodType.label) # pylint: disable=no-member
+            db.session.query(
+                FoodEntry.food_type_id, FoodType.label
+            )  # pylint: disable=no-member
             .outerjoin(FoodEntry)
             .filter(FoodType.in_statistics, not FoodType.is_hidden)
             .subquery()
         )
 
-        food_count = db.session.query( # pylint: disable=no-member
+        food_count = db.session.query(  # pylint: disable=no-member
             count_query.c.label,
-            db.func.count(count_query.c.food_type_id).label("count"), # pylint: disable=no-member
+            db.func.count(count_query.c.food_type_id).label(
+                "count"
+            ),  # pylint: disable=no-member
         ).group_by(count_query.c.label)
 
         latest_query = (
-            db.session.query( # pylint: disable=no-member
-                FoodType.label, db.func.max(FoodEntry.utc_date).label("max") # pylint: disable=no-member
+            db.session.query(  # pylint: disable=no-member
+                FoodType.label,
+                db.func.max(FoodEntry.utc_date).label(
+                    "max"
+                ),  # pylint: disable=no-member
             )
             .join(FoodType)
             .filter(FoodType.in_statistics, not FoodType.is_hidden)
@@ -231,7 +240,9 @@ class WeightEntry(db.Model, Entry):
         returns most recent weight or none for each guineapig [(GuineaPig.name, weight)]
         """
         return (
-            db.session.query(GuineaPig.name, WeightEntry.value) # pylint: disable=no-member
+            db.session.query(
+                GuineaPig.name, WeightEntry.value
+            )  # pylint: disable=no-member
             .outerjoin(WeightEntry)
             .distinct(GuineaPig.name)
             .order_by(GuineaPig.name, WeightEntry.utc_date.desc())

@@ -10,6 +10,8 @@ from guineapigs.public.forms import LoginForm
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
 
+login_manager.login_view = "public.login"
+
 
 @login_manager.user_loader
 def user_loader(user_id):
