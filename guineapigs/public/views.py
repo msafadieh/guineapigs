@@ -3,7 +3,7 @@
 """
 from flask import abort, Blueprint, render_template, redirect, request, url_for
 from flask_login import current_user, login_user
-from guineapigs import models
+from guineapigs.models import User
 from guineapigs.extensions import db, login_manager
 from guineapigs.utils import is_safe_url
 from guineapigs.public.forms import LoginForm
@@ -18,7 +18,7 @@ def user_loader(user_id):
     """
     Locates user in database using its id
     """
-    return models.User.query.filter(models.User.id == user_id).first()
+    return User.query.filter(User.id == user_id).first()
 
 
 @blueprint.route("/login", methods=["GET", "POST"])
@@ -29,11 +29,9 @@ def login():
     form = LoginForm(request.form)
     if request.method == "POST" and form.validate():
         name = form.name.data.lower().split(" ")[0]
-        if not (
-            user := models.User.query.filter(models.User.name == name).first()
-        ):  # pylint: disable=superfluous-parens
-            user = models.User()
-            user.name = name
+        user = User.query.filter(User.name == name).first()
+        if not user:
+            user = User(name=name)
             db.session.add(user)
             db.session.commit()
 

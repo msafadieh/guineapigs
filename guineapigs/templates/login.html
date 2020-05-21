@@ -6,7 +6,7 @@
 		<h4>Log in</h4>
 	</div>
 	<div class="card-body">
-		<form class="mt-2 mx-auto" style="max-width: 300px;" action="/login" method="POST">
+		<form class="mt-2 mx-auto" style="max-width: 300px;" action="{{ url_for('public.login', next=request.args.get('next')) }}" method="POST">
 			{{ login_form.csrf_token }}
 			{{ form_field(login_form.name) }}
 			<button type="submit" class="btn btn-primary btn-lg btn-block mt-1">save</button>
