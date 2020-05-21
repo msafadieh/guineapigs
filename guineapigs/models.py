@@ -1,20 +1,10 @@
 """
     Database models and tables
 """
-from sqlalchemy.ext.declarative import declared_attr
-from guineapigs.app import app, db
-from guineapigs.utils import beginning_of_day_utc
 from datetime import datetime
-
-__all__ = (
-    "User",
-    "GuineaPig",
-    "FoodType",
-    "FoodEntry",
-    "VitaminCEntry",
-    "WeightEntry",
-    "food_entries",
-)
+from sqlalchemy.ext.declarative import declared_attr
+from guineapigs.extensions import db
+from guineapigs.utils import beginning_of_day_utc
 
 food_entries = db.Table(
     "food_entries",
@@ -39,19 +29,34 @@ class User(db.Model):
     weight_entries = db.relationship("WeightEntry")
 
     def get_id(self):
+        """
+        returns user id as a str
+        """
         return str(self.id)
 
-    def is_authenticated(self):
+    @staticmethod
+    def is_authenticated():
+        """
+        returns user is always authenticated (for now at least)
+        """
         return True
 
-    def is_active(self):
+    @staticmethod
+    def is_active():
+        """
+        returns user is always active
+        """
         return True
 
-    def is_anonymous(self):
+    @staticmethod
+    def is_anonymous():
+        """
+        returns False as user is never anonymous
+        """
         return False
 
 
-class GuineaPig(db.Model):
+class GuineaPig(db.Model):  # pylint: disable=too-few-public-methods
     """
     Guinea pig model to keep track of food and weight for each
     """
@@ -63,9 +68,9 @@ class GuineaPig(db.Model):
     weight_entries = db.relationship("WeightEntry")
 
 
-class FoodType(db.Model):
+class FoodType(db.Model):  # pylint: disable=too-few-public-methods
     """
-    Type of food to be used with the entry (and recommendations on it) 
+    Type of food to be used with the entry (and recommendations on it)
     """
 
     __tablename__ = "food_type"
@@ -93,10 +98,14 @@ class Entry:
 
     @classmethod
     def get_in_time_range(cls, start=None, end=None):
+        """
+        returns entries in time range or an empty list if time range
+        is not specified
+        """
         if not (start or end):
             return []
 
-        query = db.session.query(cls).order_by(cls.utc_date)
+        query = db.session.query(cls).order_by(cls.utc_date) # pylint: disable=no-member
 
         if start:
             query = query.filter(cls.utc_date >= start)
@@ -107,11 +116,17 @@ class Entry:
         return query.all()
 
     @declared_attr
-    def user_id(cls):
+    def user_id(self):
+        """
+        adds user foreign key to entry table
+        """
         return db.Column(db.Integer, db.ForeignKey("user.id"))
 
     @declared_attr
-    def user(cls):
+    def user(self):
+        """
+        establishes relationship between entries and users
+        """
         return db.relationship("User")
 
 
@@ -127,6 +142,48 @@ class FoodEntry(db.Model, Entry):
     notes = db.Column(db.String(512))
     guinea_pigs = db.relationship("GuineaPig", secondary=food_entries)
 
+    @classmethod
+    def get_statistics(cls):
+        """
+            returns statistics (most and least frequest foods and most and least recent foods)
+            returns dict {stat_type: stat_value}
+        """
+        statistics = {}
+        count_query = (
+            db.session.query(FoodEntry.food_type_id, FoodType.label) # pylint: disable=no-member
+            .outerjoin(FoodEntry)
+            .filter(FoodType.in_statistics, not FoodType.is_hidden)
+            .subquery()
+        )
+
+        food_count = db.session.query( # pylint: disable=no-member
+            count_query.c.label,
+            db.func.count(count_query.c.food_type_id).label("count"), # pylint: disable=no-member
+        ).group_by(count_query.c.label)
+
+        latest_query = (
+            db.session.query( # pylint: disable=no-member
+                FoodType.label, db.func.max(FoodEntry.utc_date).label("max") # pylint: disable=no-member
+            )
+            .join(FoodType)
+            .filter(FoodType.in_statistics, not FoodType.is_hidden)
+            .group_by(FoodType.label)
+        )
+
+        if least_frequent := food_count.order_by(db.text("count")).first():
+            statistics["least frequent"] = least_frequent[0]
+
+        if most_frequent := food_count.order_by(db.desc(db.text("count"))).first():
+            statistics["most frequent"] = most_frequent[0]
+
+        if oldest := latest_query.order_by(db.text("max")).first():
+            statistics["oldest"] = oldest[0]
+
+        if latest := latest_query.order_by(db.desc(db.text("max"))).first():
+            statistics["latest"] = latest[0]
+
+        return statistics
+
 
 class VitaminCEntry(db.Model, Entry):
     """
@@ -138,12 +195,18 @@ class VitaminCEntry(db.Model, Entry):
 
     @classmethod
     def get_today(cls):
+        """
+        returns vitamin C entry for today if found
+        """
         return VitaminCEntry.query.filter(
             VitaminCEntry.utc_date >= beginning_of_day_utc()
         ).first()
 
     @classmethod
     def delete_today(cls):
+        """
+        deletes and returns vitamin C entry for today if found
+        """
         return VitaminCEntry.query.filter(
             VitaminCEntry.utc_date >= beginning_of_day_utc()
         ).delete()
@@ -161,3 +224,15 @@ class WeightEntry(db.Model, Entry):
         db.Integer, db.ForeignKey("guinea_pig.id"), nullable=False
     )
     guinea_pig = db.relationship("GuineaPig")
+
+    @classmethod
+    def get_most_recent(cls):
+        """
+        returns most recent weight or none for each guineapig [(GuineaPig.name, weight)]
+        """
+        return (
+            db.session.query(GuineaPig.name, WeightEntry.value) # pylint: disable=no-member
+            .outerjoin(WeightEntry)
+            .distinct(GuineaPig.name)
+            .order_by(GuineaPig.name, WeightEntry.utc_date.desc())
+        )

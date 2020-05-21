@@ -5,7 +5,7 @@ import os
 import pytz
 
 
-class Config:
+class Config:  # pylint: disable=too-few-public-methods
     """
         Flask config class
     """
@@ -21,3 +21,12 @@ class Config:
         "REMEMBER_COOKIE_DURATION365", 365 * 24 * 60 * 60
     )
     SECRET_KEY = os.environ.get("SECRET_KEY", "super secret")
+    NAV_PAGES_LOGGED_IN = (
+        ("dashboard", "private.dashboard",),
+        ("history", "private.history",),
+        ("statistics", "private.statistics",),
+        ("settings", "private.settings",),
+        ("log out", "private.logout_view",),
+    )
+
+    NAV_PAGES_LOGGED_OUT = (("log in", "public.login",),)

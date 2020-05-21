@@ -1,10 +1,10 @@
 """
-    utitlities to make work easier
+    utitlities to make datetime work easier
 """
 from datetime import datetime, time, timedelta
 from urllib.parse import urlparse, urljoin
+from flask import current_app as app
 import pytz
-from guineapigs.app import app
 
 
 def beginning_of_day_utc():
@@ -22,6 +22,9 @@ def beginning_of_day_utc():
 
 
 def date_to_datetime(date):
+    """
+        converts date object to datetime object (with time variables set to zero)
+    """
     return datetime.combine(date, time())
 
 

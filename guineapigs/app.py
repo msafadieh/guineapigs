@@ -2,40 +2,48 @@
     where all the magic starts
 """
 from flask import Flask
-from flask_bootstrap import Bootstrap
-from flask_login import LoginManager
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
+from guineapigs import private, public
 from guineapigs.config import Config
+from guineapigs.extensions import bootstrap, db, login_manager, migrate
+from guineapigs.utils import strftime
 
 
 def init_flask():
     """
-    Initializes Flask app with necessary extentions
+    Initializes Flask flask_app with and registers extentions, blueprints,
+    and utils
     """
-    global app, db, login_manager
-
-    app = Flask(__name__)
-    app.config.from_object(Config)
-
-    db = SQLAlchemy(app)
-    Migrate(app, db)
-
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-    login_manager.login_view = "login"
-
-    Bootstrap(app)
+    flask_app = Flask(__name__)
+    flask_app.config.from_object(Config)
+    register_extensions(flask_app)
+    register_blueprints(flask_app)
+    register_utils(flask_app)
+    return flask_app
 
 
-init_flask()
-
-from guineapigs import models, views
-
-
-@login_manager.user_loader
-def user_loader(user_id):
+def register_extensions(flask_app):
     """
-    Locates user in database using its id
+    Registers app extensions
     """
-    return models.User.query.filter(models.User.id == user_id).first()
+    bootstrap.init_app(flask_app)
+    db.init_app(flask_app)
+    migrate.init_app(flask_app, db)
+    login_manager.init_app(flask_app)
+
+
+def register_blueprints(flask_app):
+    """
+    Registers app blueprints
+    """
+    flask_app.register_blueprint(public.views.blueprint)
+    flask_app.register_blueprint(private.views.blueprint)
+
+
+def register_utils(flask_app):
+    """
+    Registers functions for access in templates
+    """
+    flask_app.context_processor(lambda: {"strftime": strftime})
+
+
+app = init_flask()
