@@ -274,8 +274,8 @@ def food_type_form(id_=None):
     form = forms.FoodTypeForm()
     food_entry = None
 
-    if id__:
-        food_entry = models.FoodType.query.filter(models.FoodType.id == id__).first()
+    if id_:
+        food_entry = models.FoodType.query.filter(models.FoodType.id == id_).first()
 
     if form.validate_on_submit():
         food_entry = food_entry or models.FoodType()
