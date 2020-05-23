@@ -159,7 +159,7 @@ def delete_food_entry():
 
 
 @blueprint.route("/food_entry/add", methods=["GET", "POST"])
-@blueprint.route("/food_entry/edit/<int:id>", methods=["GET", "POST"])
+@blueprint.route("/food_entry/edit/<int:id_>", methods=["GET", "POST"])
 @login_required
 def food_entry_form(id_=None):
     """
@@ -207,7 +207,7 @@ def food_entry_form(id_=None):
 
 
 @blueprint.route("/weight_entry/add", methods=["GET", "POST"])
-@blueprint.route("/weight_entry/edit/<int:id>", methods=["GET", "POST"])
+@blueprint.route("/weight_entry/edit/<int:id_>", methods=["GET", "POST"])
 @login_required
 def weight_entry_form(id_=None):
     """
@@ -267,7 +267,7 @@ def guinea_pig_form(id_=None):
 @blueprint.route("/food_type/add", methods=["GET", "POST"])
 @blueprint.route("/food_type/edit/<int:id_>", methods=["GET", "POST"])
 @login_required
-def food_type_form(id__=None):
+def food_type_form(id_=None):
     """
     insert/edit guinea pigs
     """
