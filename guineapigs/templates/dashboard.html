@@ -20,7 +20,7 @@
 		</form>
 	</div>
 	<div class="list-group-flush card-body">
-	{% for entry in food_entries %}
+	{% for entry in food_entries|sort(reverse=True) %}
 	<div class="list-group-item bg-light d-flex w-100 justify-content-between px-0">
     	<div class="w-100">
       		<div class="d-flex w-100 justify-content-between">
